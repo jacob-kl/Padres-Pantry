@@ -1,0 +1,211 @@
+{
+  "_note": "All values per the serving size listed. Edit here and values update across all weeks. Tuned for Mediterranean T2D diet, 67M 190lb lightly active.",
+  "Chicken breast": {
+    "serving_qty": 100, "serving_unit": "g_raw",
+    "serving": "per 100g raw (USDA FDC 171477)",
+    "cal": 120, "protein": 23, "carbs": 0, "fat": 3, "fiber": 0,
+    "micros": { "sodium": 74, "potassium": 256, "calcium": 5, "vitamin_d": 0.1, "magnesium": 28, "zinc": 0.8, "vitamin_c": 0, "vitamin_b12": 0.3, "iron": 0.4, "vitamin_a": 6, "folate": 4, "phosphorus": 220, "selenium": 27.6 }
+  },
+  "Atlantic salmon (raw)": {
+    "serving_qty": 100, "serving_unit": "g_raw",
+    "serving": "per 100g raw (USDA FDC 175167)",
+    "cal": 208, "protein": 20, "carbs": 0, "fat": 13, "fiber": 0,
+    "micros": { "sodium": 59, "potassium": 363, "calcium": 9, "vitamin_d": 11.1, "magnesium": 27, "zinc": 0.6, "vitamin_c": 3.9, "vitamin_b12": 3.2, "iron": 0.3, "vitamin_a": 12, "folate": 25, "phosphorus": 240, "selenium": 36.5 }
+  },
+  "Frozen cod": {
+    "serving_qty": 100, "serving_unit": "g_raw",
+    "serving": "per 100g raw (USDA FDC 171958)",
+    "cal": 82, "protein": 18, "carbs": 0, "fat": 1, "fiber": 0,
+    "micros": { "sodium": 54, "potassium": 413, "calcium": 16, "vitamin_d": 1.0, "magnesium": 32, "zinc": 0.4, "vitamin_c": 1.0, "vitamin_b12": 0.9, "iron": 0.4, "vitamin_a": 10, "folate": 7, "phosphorus": 203, "selenium": 33.1 }
+  },
+  "Sardines (canned in olive oil)": {
+    "serving_qty": 100, "serving_unit": "g",
+    "serving": "per 100g drained (USDA FDC 175139)",
+    "cal": 208, "protein": 25, "carbs": 0, "fat": 11, "fiber": 0,
+    "micros": { "sodium": 505, "potassium": 397, "calcium": 382, "vitamin_d": 4.8, "magnesium": 39, "zinc": 1.3, "vitamin_c": 0, "vitamin_b12": 8.9, "iron": 2.9, "vitamin_a": 54, "folate": 10, "phosphorus": 490, "selenium": 52.7 }
+  },
+  "Ground turkey 93/7": {
+    "serving_qty": 100, "serving_unit": "g_raw",
+    "serving": "per 100g raw (USDA FDC 172945)",
+    "cal": 148, "protein": 19, "carbs": 0, "fat": 8, "fiber": 0,
+    "micros": { "sodium": 82, "potassium": 237, "calcium": 14, "vitamin_d": 0, "magnesium": 22, "zinc": 2.4, "vitamin_c": 0, "vitamin_b12": 1.5, "iron": 1.0, "vitamin_a": 0, "folate": 8, "phosphorus": 196, "selenium": 20.6 }
+  },
+  "Garbanzo beans": {
+    "serving_qty": 1, "serving_unit": "can",
+    "serving": "per 1 can (15oz / 425g) drained",
+    "cal": 697, "protein": 38, "carbs": 115, "fat": 11, "fiber": 24.1,
+    "micros": { "sodium": 726, "potassium": 1172, "calcium": 204, "vitamin_d": 0, "magnesium": 155, "zinc": 4.7, "vitamin_c": 6, "vitamin_b12": 0, "iron": 7.2, "vitamin_a": 4, "folate": 642, "phosphorus": 556, "selenium": 11.0 }
+  },
+  "Cannellini beans": {
+    "serving_qty": 1, "serving_unit": "can",
+    "serving": "per 1 can (15oz / 425g) drained",
+    "cal": 410, "protein": 28, "carbs": 74, "fat": 1, "fiber": 19.8
+  },
+  "Lentils (dry green)": {
+    "serving_qty": 100, "serving_unit": "g_dry",
+    "serving": "per 100g dry (USDA FDC 172421)",
+    "cal": 353, "protein": 25, "carbs": 60, "fat": 1, "fiber": 10.7,
+    "micros": { "sodium": 6, "potassium": 677, "calcium": 35, "vitamin_d": 0, "magnesium": 47, "zinc": 3.3, "vitamin_c": 4, "vitamin_b12": 0, "iron": 6.5, "vitamin_a": 2, "folate": 479, "phosphorus": 281, "selenium": 0.6 }
+  },
+  "Quinoa (dry)": {
+    "serving_qty": 100, "serving_unit": "g_dry",
+    "serving": "per 100g dry (USDA FDC 168917)",
+    "cal": 368, "protein": 14, "carbs": 64, "fat": 6, "fiber": 7.0,
+    "micros": { "sodium": 5, "potassium": 563, "calcium": 47, "vitamin_d": 0, "magnesium": 197, "zinc": 3.1, "vitamin_c": 0, "vitamin_b12": 0, "iron": 4.6, "vitamin_a": 1, "folate": 184, "phosphorus": 457, "selenium": 8.5 }
+  },
+  "Farro (dry)": {
+    "serving_qty": 100, "serving_unit": "g_dry",
+    "serving": "per 100g dry",
+    "cal": 340, "protein": 15, "carbs": 68, "fat": 2, "fiber": 8.0
+  },
+  "Whole wheat pita": {
+    "serving_qty": 1, "serving_unit": "pita",
+    "serving": "per 1 pita (60g)",
+    "cal": 165, "protein": 6, "carbs": 33, "fat": 2, "fiber": 4.5
+  },
+  "Baby spinach": {
+    "serving_qty": 100, "serving_unit": "g",
+    "serving": "per 100g",
+    "cal": 23, "protein": 3, "carbs": 4, "fat": 0, "fiber": 2.2,
+    "micros": { "sodium": 79, "potassium": 558, "calcium": 99, "vitamin_d": 0, "magnesium": 79, "zinc": 0.5, "vitamin_c": 28, "vitamin_b12": 0, "iron": 2.7, "vitamin_a": 469, "folate": 194, "phosphorus": 49, "selenium": 1.0 }
+  },
+  "Cherry tomatoes": {
+    "serving_qty": 100, "serving_unit": "g",
+    "serving": "per 100g",
+    "cal": 18, "protein": 1, "carbs": 4, "fat": 0, "fiber": 1.2,
+    "micros": { "sodium": 5, "potassium": 237, "calcium": 10, "vitamin_d": 0, "magnesium": 11, "zinc": 0.2, "vitamin_c": 14, "vitamin_b12": 0, "iron": 0.3, "vitamin_a": 42, "folate": 15, "phosphorus": 24, "selenium": 0.4 }
+  },
+  "Cucumber": {
+    "serving_qty": 100, "serving_unit": "g",
+    "serving": "per 100g",
+    "cal": 16, "protein": 1, "carbs": 4, "fat": 0, "fiber": 0.5
+  },
+  "Bell pepper": {
+    "serving_qty": 100, "serving_unit": "g",
+    "serving": "per 100g raw",
+    "cal": 31, "protein": 1, "carbs": 7, "fat": 0, "fiber": 2.1,
+    "micros": { "sodium": 4, "potassium": 211, "calcium": 7, "vitamin_d": 0, "magnesium": 12, "zinc": 0.3, "vitamin_c": 128, "vitamin_b12": 0, "iron": 0.4, "vitamin_a": 157, "folate": 46, "phosphorus": 26, "selenium": 0.1 }
+  },
+  "Zucchini": {
+    "serving_qty": 100, "serving_unit": "g",
+    "serving": "per 100g raw",
+    "cal": 17, "protein": 1, "carbs": 3, "fat": 0, "fiber": 1.0
+  },
+  "Eggplant": {
+    "serving_qty": 100, "serving_unit": "g",
+    "serving": "per 100g raw",
+    "cal": 25, "protein": 1, "carbs": 6, "fat": 0, "fiber": 3.0
+  },
+  "Kalamata olives": {
+    "serving_qty": 5, "serving_unit": "olives",
+    "serving": "per 5 olives (~20g)",
+    "cal": 36, "protein": 0, "carbs": 2, "fat": 3, "fiber": 0.7
+  },
+  "Feta cheese (reduced fat)": {
+    "serving_qty": 30, "serving_unit": "g",
+    "serving": "per 30g (1 oz)",
+    "cal": 60, "protein": 5, "carbs": 1, "fat": 4, "fiber": 0
+  },
+  "Greek yogurt (plain nonfat)": {
+    "serving_qty": 170, "serving_unit": "g",
+    "serving": "per 170g container",
+    "cal": 100, "protein": 17, "carbs": 6, "fat": 0, "fiber": 0,
+    "micros": { "sodium": 65, "potassium": 240, "calcium": 200, "vitamin_d": 0, "magnesium": 17, "zinc": 1.1, "vitamin_c": 0, "vitamin_b12": 1.1, "iron": 0, "vitamin_a": 0, "folate": 14, "phosphorus": 215, "selenium": 9.7 }
+  },
+  "Whole grain bread": {
+    "serving_qty": 1, "serving_unit": "slice",
+    "serving": "per 1 slice (40g)",
+    "cal": 100, "protein": 4, "carbs": 19, "fat": 2, "fiber": 3.0
+  },
+  "Almond butter": {
+    "serving_qty": 2, "serving_unit": "tbsp",
+    "serving": "per 2 tbsp (32g)",
+    "cal": 196, "protein": 7, "carbs": 7, "fat": 18, "fiber": 3.3
+  },
+  "Walnuts": {
+    "serving_qty": 28, "serving_unit": "g",
+    "serving": "per 28g (1 oz / ~14 halves)",
+    "cal": 185, "protein": 4, "carbs": 4, "fat": 18, "fiber": 1.9,
+    "micros": { "sodium": 1, "potassium": 125, "calcium": 28, "vitamin_d": 0, "magnesium": 45, "zinc": 0.9, "vitamin_c": 0.4, "vitamin_b12": 0, "iron": 0.8, "vitamin_a": 1, "folate": 28, "phosphorus": 98, "selenium": 1.4 }
+  },
+  "Almonds": {
+    "serving_qty": 28, "serving_unit": "g",
+    "serving": "per 28g (1 oz / ~23 almonds)",
+    "cal": 164, "protein": 6, "carbs": 6, "fat": 14, "fiber": 3.5
+  },
+  "Hummus": {
+    "serving_qty": 60, "serving_unit": "g",
+    "serving": "per 60g (~4 tbsp)",
+    "cal": 100, "protein": 5, "carbs": 9, "fat": 6, "fiber": 3.0
+  },
+  "Olive oil": {
+    "serving_qty": 1, "serving_unit": "tbsp",
+    "serving": "per 1 tbsp (14g)",
+    "cal": 119, "protein": 0, "carbs": 0, "fat": 14, "fiber": 0,
+    "micros": { "sodium": 0, "potassium": 0, "calcium": 0, "vitamin_d": 0, "magnesium": 0, "zinc": 0, "vitamin_c": 0, "vitamin_b12": 0, "iron": 0.1, "vitamin_a": 0, "folate": 0, "phosphorus": 0, "selenium": 0 }
+  },
+  "Diced tomatoes (canned)": {
+    "serving_qty": 1, "serving_unit": "cup",
+    "serving": "per 1 cup (240g)",
+    "cal": 41, "protein": 2, "carbs": 9, "fat": 0, "fiber": 2.0
+  },
+  "Eggs (large)": {
+    "serving_qty": 1, "serving_unit": "egg",
+    "serving": "per 1 large egg (50g)",
+    "cal": 72, "protein": 6, "carbs": 0, "fat": 5, "fiber": 0,
+    "micros": { "sodium": 71, "potassium": 69, "calcium": 28, "vitamin_d": 1.1, "magnesium": 6, "zinc": 0.6, "vitamin_c": 0, "vitamin_b12": 0.6, "iron": 0.9, "vitamin_a": 80, "folate": 24, "phosphorus": 99, "selenium": 15.4 }
+  },
+  "Lemon juice": {
+    "serving_qty": 2, "serving_unit": "tbsp",
+    "serving": "per 2 tbsp (30ml)",
+    "cal": 7, "protein": 0, "carbs": 2, "fat": 0, "fiber": 0
+  },
+  "Spices (oregano/thyme/cumin/paprika/salt)": {
+    "serving_qty": 1, "serving_unit": "tsp",
+    "serving": "per 1 tsp mixed",
+    "cal": 5, "protein": 0, "carbs": 1, "fat": 0, "fiber": 0
+  },
+  "Mixed berries (frozen)": {
+    "serving_qty": 1, "serving_unit": "cup",
+    "serving": "per 1 cup (140g)",
+    "cal": 70, "protein": 1, "carbs": 17, "fat": 0, "fiber": 4.5
+  },
+  "Apple": {
+    "serving_qty": 1, "serving_unit": "medium",
+    "serving": "per 1 medium apple (~182g)",
+    "cal": 95, "protein": 0, "carbs": 25, "fat": 0, "fiber": 4.4
+  },
+  "Orange": {
+    "serving_qty": 1, "serving_unit": "medium",
+    "serving": "per 1 medium orange (~131g)",
+    "cal": 62, "protein": 1, "carbs": 15, "fat": 0, "fiber": 3.1
+  },
+  "Ground flaxseed": {
+    "serving_qty": 1, "serving_unit": "tbsp",
+    "serving": "per 1 tbsp (10g)",
+    "cal": 55, "protein": 2, "carbs": 3, "fat": 4, "fiber": 2.8
+  },
+  "Chia seeds": {
+    "serving_qty": 1, "serving_unit": "tbsp",
+    "serving": "per 1 tbsp (12g)",
+    "cal": 58, "protein": 2, "carbs": 5, "fat": 4, "fiber": 4.1
+  },
+  "_dri": {
+    "padre": {
+      "sodium":     { "dri": 2300, "unit": "mg", "upper": true },
+      "potassium":  { "dri": 4700, "unit": "mg" },
+      "calcium":    { "dri": 1200, "unit": "mg" },
+      "vitamin_d":  { "dri": 20,   "unit": "mcg" },
+      "magnesium":  { "dri": 420,  "unit": "mg" },
+      "zinc":       { "dri": 11,   "unit": "mg" },
+      "vitamin_c":  { "dri": 90,   "unit": "mg" },
+      "vitamin_b12":{ "dri": 2.4,  "unit": "mcg" },
+      "iron":       { "dri": 8,    "unit": "mg" },
+      "vitamin_a":  { "dri": 900,  "unit": "mcg" },
+      "folate":     { "dri": 400,  "unit": "mcg" },
+      "phosphorus": { "dri": 700,  "unit": "mg" },
+      "selenium":   { "dri": 55,   "unit": "mcg" },
+      "fiber":      { "dri": 30,   "unit": "g" }
+    }
+  }
+}
