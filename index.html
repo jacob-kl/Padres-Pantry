@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Padre's Pantry — Meal Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #faf7f2;
+    color: #2d2416;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+  }
+  button { font-family: inherit; }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: #f5f0e8; }
+  ::-webkit-scrollbar-thumb { background: #c8a96a; border-radius: 3px; }
+  ::selection { background: #f0e0b8; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+const { useState, useEffect, useContext, createContext, useCallback } = React;
+
+const WEEK_REGISTRY = [
+  { id: "2026-W23", label: "Week of June 1, 2026" },
+];
+const CURRENT_WEEK_ID = WEEK_REGISTRY[WEEK_REGISTRY.length - 1].id;
+
+const NutritionDBCtx = createContext({});
+const useNutritionDB = () => useContext(NutritionDBCtx);
+const SubsCtx = createContext({ subs: {}, setSub: () => {} });
+const useSubs = () => useContext(SubsCtx);
+const OpenDropdownCtx = createContext({ openKey: null, setOpenKey: () => {} });
+const useOpenDropdown = () => useContext(OpenDropdownCtx);
+
+const CLR = {
+  cal: "#c8814a",
+  protein: "#6b9e6b",
+  carbs: "#c8a96a",
+  fat: "#7a9ec0",
+  fiber: "#9e7ab5"
+};
+
+const THEME = {
+  bg: "#faf7f2",
+  card: "#ffffff",
+  cardBorder: "#e8dfc8",
+  accent: "#c8814a",
+  accentSoft: "#f5ede0",
+  gold: "#c8a96a",
+  goldSoft: "#fdf4e3",
+  green: "#4a7a4a",
+  greenSoft: "#edf5ed",
+  text: "#2d2416",
+  textMid: "#7a6848",
+  textLight: "#b09070",
+  divider: "#e8dfc8",
+  tag: "#f5efe4",
+  tagBorder: "#d9c99a",
+};
+
+function MacroPill({ label, value, unit, colorKey }) {
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: 5,
+      background: THEME.tag, border: `1px solid ${THEME.tagBorder}`,
+      borderRadius: 20, padding: "3px 10px",
+      fontSize: 11, fontWeight: 400, color: THEME.textMid
+    }}>
+      <span style={{ width: 6, height: 6, borderRadius: "50%", background: CLR[colorKey], flexShrink: 0 }} />
+      <span style={{ color: THEME.textLight, fontSize: 10, fontFamily: "monospace", letterSpacing: "0.06em", textTransform: "uppercase" }}>{label}</span>
+      <span style={{ color: THEME.text, fontWeight: 500 }}>{value}{unit}</span>
+    </span>
+  );
+}
+
+function MacroRow({ macros, compact }) {
+  const items = [
+    ["cal", macros.cal, "kcal"],
+    ["protein", macros.protein, "g"],
+    ["carbs", macros.carbs, "g"],
+    ["fat", macros.fat, "g"],
+  ];
+  if (macros.fiber != null) items.push(["fiber", macros.fiber, "g"]);
+  return (
+    <div style={{ display: "flex", gap: 5, flexWrap: "wrap", margin: compact ? "6px 0 10px" : "10px 0 16px" }}>
+      {items.map(([key, val, unit]) => (
+        <MacroPill key={key} label={key} value={val} unit={unit} colorKey={key} />
+      ))}
+    </div>
+  );
+}
+
+function SectionLabel({ children }) {
+  return (
+    <div style={{
+      fontFamily: "'Playfair Display', serif",
+      fontSize: 11, letterSpacing: "0.15em",
+      textTransform: "uppercase",
+      color: THEME.textLight,
+      marginBottom: 14
+    }}>{children}</div>
+  );
+}
+
+function Card({ children, style }) {
+  return (
+    <div style={{
+      background: THEME.card,
+      border: `1px solid ${THEME.cardBorder}`,
+      borderRadius: 16,
+      padding: "18px 20px",
+      ...style
+    }}>
+      {children}
+    </div>
+  );
+}
+
+function Tag({ children, color }) {
+  return (
+    <span style={{
+      display: "inline-block",
+      background: color === "green" ? THEME.greenSoft : THEME.accentSoft,
+      color: color === "green" ? THEME.green : THEME.accent,
+      borderRadius: 20, padding: "2px 10px",
+      fontSize: 11, fontWeight: 500
+    }}>{children}</span>
+  );
+}
+
+function Steps({ items }) {
+  return (
+    <ol style={{ paddingLeft: 18, margin: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+      {items.map((step, i) => (
+        <li key={i} style={{ fontSize: 13, lineHeight: 1.65, color: THEME.textMid }}>{step}</li>
+      ))}
+    </ol>
+  );
+}
+
+function SubDropdown({ ing }) {
+  const { subs, setSub } = useSubs();
+  const { openKey, setOpenKey } = useOpenDropdown();
+  const btnRef = React.useRef(null);
+  const isOpen = openKey === ing.subKey;
+  const current = subs[ing.subKey] || "default";
+  const [menuStyle, setMenuStyle] = useState({});
+
+  const toggle = () => {
+    if (!isOpen && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const menuHeight = Math.min(280, 44 + ing.substitutions.length * 52);
+      const top = spaceBelow > menuHeight ? rect.bottom + 6 : rect.top - menuHeight - 6;
+      setMenuStyle({ top: Math.max(8, top), left: Math.min(rect.left, window.innerWidth - 230) });
+    }
+    setOpenKey(isOpen ? null : ing.subKey);
+  };
+
+  return (
+    <div style={{ display: "inline-block" }}>
+      <button ref={btnRef} onClick={toggle} style={{
+        background: "none", border: `1px solid ${THEME.cardBorder}`,
+        borderRadius: 5, color: THEME.textLight,
+        padding: "1px 7px", cursor: "pointer", fontSize: 10, marginLeft: 6
+      }}>
+        swap {isOpen ? "▲" : "▼"}
+      </button>
+      {isOpen && (
+        <div style={{
+          position: "fixed", ...menuStyle, zIndex: 1000,
+          background: THEME.card, border: `1px solid ${THEME.gold}`,
+          borderRadius: 12, padding: 6, width: 220,
+          boxShadow: "0 8px 32px rgba(80,50,10,0.12)"
+        }}>
+          <div onClick={() => { setSub(ing.subKey, null); setOpenKey(null); }} style={{
+            padding: "9px 12px", fontSize: 12, cursor: "pointer", borderRadius: 8,
+            color: current === "default" ? THEME.green : THEME.textMid,
+            background: current === "default" ? THEME.greenSoft : "none"
+          }}>
+            {ing.item} <span style={{ color: THEME.textLight, fontSize: 10 }}>(original)</span>
+          </div>
+          {ing.substitutions.map(sub => (
+            <div key={sub.id} onClick={() => { setSub(ing.subKey, sub.id); setOpenKey(null); }} style={{
+              padding: "9px 12px", fontSize: 12, cursor: "pointer", borderRadius: 8,
+              color: current === sub.id ? THEME.green : THEME.textMid,
+              background: current === sub.id ? THEME.greenSoft : "none"
+            }}>
+              {sub.item}
+              {sub.note && <div style={{ fontSize: 10, color: THEME.textLight, marginTop: 2 }}>{sub.note}</div>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function IngredientList({ ingredients, subs }) {
+  const resolved = ingredients.map(ing => {
+    if (!ing.subKey || !subs[ing.subKey]) return ing;
+    const sub = ing.substitutions && ing.substitutions.find(s => s.id === subs[ing.subKey]);
+    return sub ? { ...ing, item: sub.item } : ing;
+  });
+  return (
+    <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+      {resolved.map((ing, i) => (
+        <li key={i} style={{ fontSize: 13, color: THEME.textMid, display: "flex", alignItems: "center" }}>
+          <span style={{ color: THEME.gold, marginRight: 8, fontSize: 10 }}>◆</span>
+          {ing.item}
+          {ing.subKey && ing.substitutions && <SubDropdown ing={ing} />}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ExpandableSection({ title, emoji, children, defaultOpen }) {
+  const [open, setOpen] = useState(defaultOpen || false);
+  return (
+    <div style={{ borderBottom: `1px solid ${THEME.divider}` }}>
+      <button onClick={() => setOpen(!open)} style={{
+        width: "100%", background: "none", border: "none", cursor: "pointer",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "14px 0", textAlign: "left"
+      }}>
+        <span style={{ fontSize: 14, fontWeight: 500, color: THEME.text }}>
+          {emoji && <span style={{ marginRight: 8 }}>{emoji}</span>}{title}
+        </span>
+        <span style={{ color: THEME.textLight, fontSize: 12 }}>{open ? "▲" : "▼"}</span>
+      </button>
+      {open && <div style={{ paddingBottom: 16 }}>{children}</div>}
+    </div>
+  );
+}
+
+function MealCard({ meal, type }) {
+  const { subs } = useSubs();
+  const [showSteps, setShowSteps] = useState(false);
+  const [showIngredients, setShowIngredients] = useState(false);
+
+  const dayLabel = meal.day || meal.days;
+  const note = meal.note;
+  const macros = meal.macros || (type === "dinner" ? meal : null);
+
+  return (
+    <Card style={{ marginBottom: 12 }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 6 }}>
+        <div>
+          <div style={{ fontSize: 11, color: THEME.textLight, fontFamily: "monospace", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 4 }}>{dayLabel}</div>
+          <div style={{ fontSize: 16, fontWeight: 500, color: THEME.text, fontFamily: "'Playfair Display', serif" }}>{meal.name}</div>
+        </div>
+      </div>
+
+      {macros && <MacroRow macros={macros} />}
+
+      {note && (
+        <div style={{ fontSize: 12, color: THEME.textLight, lineHeight: 1.6, marginBottom: 10, fontStyle: "italic" }}>{note}</div>
+      )}
+
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        {meal.ingredients && (
+          <button onClick={() => setShowIngredients(!showIngredients)} style={{
+            background: showIngredients ? THEME.goldSoft : THEME.tag,
+            border: `1px solid ${THEME.tagBorder}`,
+            borderRadius: 20, padding: "4px 12px", cursor: "pointer",
+            fontSize: 11, color: THEME.textMid
+          }}>
+            {showIngredients ? "▲" : "▼"} Ingredients
+          </button>
+        )}
+        {meal.steps && (
+          <button onClick={() => setShowSteps(!showSteps)} style={{
+            background: showSteps ? THEME.accentSoft : THEME.tag,
+            border: `1px solid ${THEME.tagBorder}`,
+            borderRadius: 20, padding: "4px 12px", cursor: "pointer",
+            fontSize: 11, color: THEME.textMid
+          }}>
+            {showSteps ? "▲" : "▼"} Steps
+          </button>
+        )}
+      </div>
+
+      {showIngredients && meal.ingredients && (
+        <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${THEME.divider}` }}>
+          <SectionLabel>Ingredients</SectionLabel>
+          <IngredientList ingredients={meal.ingredients} subs={subs} />
+        </div>
+      )}
+
+      {showSteps && meal.steps && (
+        <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${THEME.divider}` }}>
+          <SectionLabel>Method</SectionLabel>
+          <Steps items={meal.steps} />
+        </div>
+      )}
+    </Card>
+  );
+}
+
+function SnackCard({ snack }) {
+  return (
+    <div style={{
+      background: THEME.tag, border: `1px solid ${THEME.tagBorder}`,
+      borderRadius: 12, padding: "12px 16px", marginBottom: 8
+    }}>
+      <div style={{ fontSize: 14, fontWeight: 500, color: THEME.text, marginBottom: 4 }}>{snack.name}</div>
+      <MacroRow macros={snack.macros} compact />
+      {snack.desc && <div style={{ fontSize: 12, color: THEME.textLight, lineHeight: 1.5 }}>{snack.desc}</div>}
+    </div>
+  );
+}
+
+function BedtimeSnackCard({ snack }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{
+      background: "#f5f0f8", border: "1px solid #d8c8e8",
+      borderRadius: 14, padding: "14px 18px", marginBottom: 10
+    }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 15, fontWeight: 500, color: THEME.text, fontFamily: "'Playfair Display', serif", marginBottom: 2 }}>{snack.name}</div>
+          {snack.timing && (
+            <div style={{ fontSize: 11, color: "#8a70a0", fontFamily: "monospace", letterSpacing: "0.06em", marginBottom: 6 }}>⏰ {snack.timing}</div>
+          )}
+          <MacroRow macros={snack.macros} compact />
+          <div style={{ fontSize: 12, color: THEME.textMid, lineHeight: 1.6 }}>{snack.desc}</div>
+        </div>
+      </div>
+      {snack.whyItWorks && (
+        <div>
+          <button onClick={() => setOpen(!open)} style={{
+            background: "none", border: "none", cursor: "pointer",
+            fontSize: 11, color: "#8a70a0", padding: "6px 0 0", display: "flex", alignItems: "center", gap: 4
+          }}>
+            {open ? "▲" : "▼"} Why this helps overnight
+          </button>
+          {open && (
+            <div style={{
+              marginTop: 8, padding: "10px 12px",
+              background: "#ede8f5", borderRadius: 8,
+              fontSize: 12, color: "#5a4870", lineHeight: 1.65
+            }}>
+              {snack.whyItWorks}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ShoppingTab({ week }) {
+  const [checked, setChecked] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("padre_shopping_" + week.id) || "{}"); } catch { return {}; }
+  });
+
+  const toggle = (key) => {
+    setChecked(prev => {
+      const next = { ...prev, [key]: !prev[key] };
+      localStorage.setItem("padre_shopping_" + week.id, JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const categories = Object.entries(week.shopping);
+  const totalItems = categories.reduce((n, [, items]) => n + items.length, 0);
+  const checkedCount = Object.values(checked).filter(Boolean).length;
+
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+        <div style={{ fontSize: 13, color: THEME.textLight }}>
+          {checkedCount}/{totalItems} items
+        </div>
+        {checkedCount > 0 && (
+          <button onClick={() => {
+            setChecked({});
+            localStorage.removeItem("padre_shopping_" + week.id);
+          }} style={{
+            background: "none", border: `1px solid ${THEME.cardBorder}`,
+            borderRadius: 8, color: THEME.textLight, padding: "4px 12px",
+            cursor: "pointer", fontSize: 11
+          }}>Clear all</button>
+        )}
+      </div>
+      {categories.map(([cat, items]) => (
+        <div key={cat} style={{ marginBottom: 24 }}>
+          <div style={{
+            fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase",
+            color: THEME.accent, fontWeight: 500, marginBottom: 10,
+            fontFamily: "'Playfair Display', serif"
+          }}>{cat}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            {items.map((item, i) => {
+              const key = cat + ":" + i;
+              const done = !!checked[key];
+              return (
+                <div key={key} onClick={() => toggle(key)} style={{
+                  display: "flex", alignItems: "flex-start", gap: 12,
+                  padding: "10px 14px", borderRadius: 10, cursor: "pointer",
+                  background: done ? THEME.greenSoft : THEME.card,
+                  border: `1px solid ${done ? "#c8e0c8" : THEME.cardBorder}`,
+                  transition: "all 0.15s"
+                }}>
+                  <div style={{
+                    width: 18, height: 18, borderRadius: "50%", flexShrink: 0, marginTop: 1,
+                    border: `2px solid ${done ? THEME.green : THEME.textLight}`,
+                    background: done ? THEME.green : "none",
+                    display: "flex", alignItems: "center", justifyContent: "center"
+                  }}>
+                    {done && <span style={{ color: "#fff", fontSize: 10 }}>✓</span>}
+                  </div>
+                  <span style={{
+                    fontSize: 13, color: done ? THEME.textLight : THEME.text,
+                    textDecoration: done ? "line-through" : "none",
+                    lineHeight: 1.5
+                  }}>{typeof item === "string" ? item : item.display || item}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function NutritionTab({ week }) {
+  const targets = week.targets && week.targets.padre;
+  if (!targets) return null;
+
+  const cols = ["", "Cal", "Protein", "Carbs", "Fat", "Fiber"];
+  const goal = targets.goal;
+
+  return (
+    <div>
+      <Card style={{ marginBottom: 16 }}>
+        <SectionLabel>Weekly Macro Targets</SectionLabel>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
+          {[["cal","Cal","kcal"], ["protein","Protein","g"], ["carbs","Carbs","g"], ["fat","Fat","g"], ["fiber","Fiber","g"]].map(([key, label, unit], i) => (
+            <div key={key} style={{
+              flex: "1 1 80px", minWidth: 70,
+              background: THEME.tag, border: `1px solid ${THEME.tagBorder}`,
+              borderRadius: 12, padding: "12px 14px", textAlign: "center"
+            }}>
+              <div style={{ fontSize: 20, fontWeight: 500, color: CLR[key], fontFamily: "'Playfair Display', serif" }}>{goal[i]}</div>
+              <div style={{ fontSize: 10, color: THEME.textLight, textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 2 }}>{label}{unit !== "kcal" ? " (g)" : ""}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 12, color: THEME.textLight, lineHeight: 1.6, borderTop: `1px solid ${THEME.divider}`, paddingTop: 12 }}>
+          <strong style={{ color: THEME.textMid }}>T2D notes:</strong> Carbs are intentionally low (~115g/day) and exclusively from low-GI sources — lentils (GI ~32), chickpeas, vegetables, small amounts of quinoa. No refined grains, no added sugar. The bedtime snack is not optional — it anchors overnight blood sugar and supports better sleep.
+        </div>
+      </Card>
+      <Card>
+        <SectionLabel>Daily Breakdown</SectionLabel>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <thead>
+              <tr>
+                {cols.map(c => (
+                  <th key={c} style={{
+                    textAlign: c === "" ? "left" : "right",
+                    padding: "6px 10px",
+                    color: THEME.textLight, fontWeight: 400,
+                    fontFamily: "monospace", fontSize: 10,
+                    textTransform: "uppercase", letterSpacing: "0.08em",
+                    borderBottom: `1px solid ${THEME.divider}`
+                  }}>{c}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {targets.rows.map(([label, ...vals], i) => (
+                <tr key={i} style={{ borderBottom: `1px solid ${THEME.divider}` }}>
+                  <td style={{ padding: "10px 10px", color: THEME.text, fontWeight: 400, fontSize: 13 }}>{label}</td>
+                  {vals.map((v, j) => (
+                    <td key={j} style={{
+                      padding: "10px 10px", textAlign: "right",
+                      color: j === 0 ? CLR.cal : j === 1 ? CLR.protein : j === 2 ? CLR.carbs : j === 3 ? CLR.fat : CLR.fiber,
+                      fontFamily: "monospace", fontWeight: 500
+                    }}>{v}{j > 0 ? "g" : ""}</td>
+                  ))}
+                </tr>
+              ))}
+              <tr style={{ background: THEME.goldSoft }}>
+                <td style={{ padding: "10px 10px", color: THEME.textMid, fontFamily: "monospace", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em" }}>Goal</td>
+                {goal.map((v, i) => (
+                  <td key={i} style={{
+                    padding: "10px 10px", textAlign: "right",
+                    color: THEME.textMid, fontFamily: "monospace", fontWeight: 500
+                  }}>{v}{i > 0 ? "g" : ""}</td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function WeekView({ week }) {
+  const [tab, setTab] = useState(0);
+  const TABS = ["Meals", "Shopping", "Nutrition"];
+
+  return (
+    <div>
+      <div style={{ display: "flex", gap: 4, background: "#f0ebe0", border: `1px solid ${THEME.cardBorder}`, borderRadius: 12, padding: 4, marginBottom: 24, maxWidth: 360 }}>
+        {TABS.map((t, i) => (
+          <button key={t} onClick={() => setTab(i)} style={{
+            flex: 1, padding: "8px 12px",
+            background: tab === i ? THEME.card : "none",
+            border: `1px solid ${tab === i ? THEME.cardBorder : "transparent"}`,
+            borderRadius: 8, cursor: "pointer",
+            color: tab === i ? THEME.text : THEME.textLight,
+            fontSize: 12, fontWeight: tab === i ? 500 : 400,
+            transition: "all 0.15s"
+          }}>{t}</button>
+        ))}
+      </div>
+
+      {tab === 0 && (
+        <div>
+          {/* Breakfasts */}
+          {week.breakfasts && (
+            <div style={{ marginBottom: 32 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                <span style={{ fontSize: 18 }}>🌅</span>
+                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 400, color: THEME.text }}>Breakfasts</h2>
+              </div>
+              {week.breakfasts.map((b, i) => <MealCard key={i} meal={b} type="breakfast" />)}
+            </div>
+          )}
+          {/* Lunches */}
+          {week.lunches && (
+            <div style={{ marginBottom: 32 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                <span style={{ fontSize: 18 }}>🫙</span>
+                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 400, color: THEME.text }}>Lunches</h2>
+              </div>
+              <div style={{ fontSize: 12, color: THEME.textLight, marginBottom: 14, lineHeight: 1.6, background: THEME.goldSoft, border: `1px solid ${THEME.tagBorder}`, borderRadius: 10, padding: "10px 14px" }}>
+                💡 <strong>Batch cook tip:</strong> Make the chickpea bowls and lentil soup on Sunday — it takes about an hour total and sets you up for the whole week.
+              </div>
+              {week.lunches.map((l, i) => <MealCard key={i} meal={l} type="lunch" />)}
+            </div>
+          )}
+          {/* Dinners */}
+          {week.dinners && (
+            <div style={{ marginBottom: 32 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                <span style={{ fontSize: 18 }}>🍽️</span>
+                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 400, color: THEME.text }}>Dinners</h2>
+              </div>
+              {week.dinners.map((d, i) => <MealCard key={i} meal={d} type="dinner" />)}
+            </div>
+          )}
+          {/* Snacks */}
+          {week.snacks && (
+            <div style={{ marginBottom: 32 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                <span style={{ fontSize: 18 }}>🫒</span>
+                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 400, color: THEME.text }}>Daytime Snacks</h2>
+              </div>
+              <div style={{ fontSize: 12, color: THEME.textLight, marginBottom: 14 }}>Pick 1 per day depending on hunger. All blood-sugar friendly — nothing spikey.</div>
+              {week.snacks.map((s, i) => <SnackCard key={i} snack={s} />)}
+            </div>
+          )}
+          {/* Bedtime Snacks */}
+          {week.bedtimeSnacks && (
+            <div style={{ marginBottom: 32 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+                <span style={{ fontSize: 18 }}>🌙</span>
+                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 400, color: THEME.text }}>Bedtime Snack</h2>
+              </div>
+              <div style={{
+                fontSize: 12, lineHeight: 1.65, marginBottom: 16,
+                background: "#f0eaf8", border: "1px solid #d0c0e4",
+                borderRadius: 10, padding: "12px 16px", color: "#5a4870"
+              }}>
+                <strong>This one matters.</strong> Overnight blood sugar drops are likely causing the broken sleep. A slow-digesting fat + protein snack 30–45 min before bed gives the liver substrate to work with overnight — preventing the low that wakes him up. Pick one of these every night, not optional.
+              </div>
+              {week.bedtimeSnacks.map((s, i) => <BedtimeSnackCard key={i} snack={s} />)}
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === 1 && <ShoppingTab week={week} />}
+      {tab === 2 && <NutritionTab week={week} />}
+    </div>
+  );
+}
+
+function HistoryTab({ allWeeks }) {
+  const [viewing, setViewing] = useState(null);
+  const past = allWeeks.filter(w => w.id !== CURRENT_WEEK_ID).reverse();
+
+  if (viewing) return (
+    <div>
+      <button onClick={() => setViewing(null)} style={{
+        display: "flex", alignItems: "center", gap: 8,
+        background: "none", border: `1px solid ${THEME.cardBorder}`,
+        borderRadius: 8, color: THEME.textMid, padding: "7px 14px",
+        cursor: "pointer", fontSize: 12, marginBottom: 24
+      }}>← Back</button>
+      <div style={{ fontSize: 13, color: THEME.accent, fontFamily: "'Playfair Display', serif", marginBottom: 20 }}>{viewing.label}</div>
+      <WeekView week={viewing} />
+    </div>
+  );
+
+  if (past.length === 0) return (
+    <div style={{ textAlign: "center", padding: "60px 0", color: THEME.textLight }}>
+      <div style={{ fontSize: 32, marginBottom: 12 }}>🫙</div>
+      <div style={{ fontSize: 14 }}>No past weeks yet.</div>
+      <div style={{ fontSize: 12, marginTop: 6, color: THEME.textLight }}>Past weeks appear here as you add new JSON files to weeks/.</div>
+    </div>
+  );
+
+  return (
+    <div>
+      <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: THEME.textLight, marginBottom: 16 }}>{past.length} past week{past.length !== 1 ? "s" : ""}</div>
+      {past.map(week => (
+        <div key={week.id} style={{
+          background: THEME.card, border: `1px solid ${THEME.cardBorder}`,
+          borderRadius: 14, padding: "16px 20px",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          marginBottom: 10
+        }}>
+          <div>
+            <div style={{ fontSize: 15, fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>{week.label}</div>
+            <div style={{ fontSize: 11, color: THEME.textLight, fontFamily: "monospace" }}>{(week.dinners || []).length} dinners</div>
+          </div>
+          <button onClick={() => setViewing(week)} style={{
+            background: THEME.accentSoft, border: `1px solid ${THEME.tagBorder}`,
+            borderRadius: 8, color: THEME.accent, padding: "7px 14px",
+            cursor: "pointer", fontSize: 12
+          }}>View</button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function App() {
+  const [mainTab, setMainTab] = useState(0);
+  const [allWeeks, setAllWeeks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [nutritionDB, setNutritionDB] = useState({});
+  const [subs, setSubs] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("padre_subs") || "{}"); } catch { return {}; }
+  });
+  const setSub = useCallback((key, val) => {
+    setSubs(prev => {
+      const next = { ...prev };
+      if (val == null) delete next[key]; else next[key] = val;
+      localStorage.setItem("padre_subs", JSON.stringify(next));
+      return next;
+    });
+  }, []);
+  const [openKey, setOpenKey] = useState(null);
+
+  useEffect(() => {
+    fetch("nutrition.json").then(r => r.json()).then(setNutritionDB).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    async function loadWeeks() {
+      try {
+        const results = await Promise.all(
+          WEEK_REGISTRY.map(async ({ id, label }) => {
+            const res = await fetch("weeks/" + id + ".json");
+            if (!res.ok) throw new Error("Could not load " + id + ".json");
+            const data = await res.json();
+            return { ...data, id, label };
+          })
+        );
+        setAllWeeks(results);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadWeeks();
+  }, []);
+
+  const currentWeek = allWeeks.find(w => w.id === CURRENT_WEEK_ID);
+  const MAIN_TABS = ["This Week", "Past Weeks"];
+
+  if (loading) return (
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", color: THEME.textLight, fontSize: 13 }}>
+      Loading Padre's Pantry…
+    </div>
+  );
+
+  if (error) return (
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ textAlign: "center", color: THEME.accent, fontSize: 13 }}>
+        <div style={{ marginBottom: 8, fontFamily: "'Playfair Display', serif", fontSize: 18 }}>Something's off</div>
+        <div style={{ color: THEME.textLight, fontSize: 11 }}>{error}</div>
+      </div>
+    </div>
+  );
+
+  return (
+    <NutritionDBCtx.Provider value={nutritionDB}>
+    <OpenDropdownCtx.Provider value={{ openKey, setOpenKey }}>
+    <SubsCtx.Provider value={{ subs, setSub }}>
+      <div style={{ minHeight: "100vh", padding: "40px 20px 80px" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+
+          {/* Header */}
+          <div style={{ marginBottom: 36, borderBottom: `1px solid ${THEME.divider}`, paddingBottom: 28 }}>
+            <div style={{ marginBottom: 18 }}>
+              <div style={{
+                fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase",
+                color: THEME.textLight, marginBottom: 8,
+                fontFamily: "'Playfair Display', serif"
+              }}>Mediterranean · Meal Plan</div>
+              <h1 style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(2rem, 6vw, 3.2rem)",
+                fontWeight: 400, lineHeight: 1.1,
+                color: THEME.text
+              }}>
+                Padre's <span style={{ color: THEME.accent, fontStyle: "italic" }}>Pantry.</span>
+              </h1>
+            </div>
+
+            {/* Quick stats */}
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              {[
+                { label: "Calories / day", val: "~1,900 kcal" },
+                { label: "Protein", val: "~130g" },
+                { label: "Diet", val: "Mediterranean" },
+                { label: "Carb strategy", val: "Low-GI, high fiber" },
+              ].map(({ label, val }) => (
+                <div key={label} style={{
+                  background: THEME.card, border: `1px solid ${THEME.cardBorder}`,
+                  borderRadius: 10, padding: "8px 14px"
+                }}>
+                  <div style={{ fontSize: 10, color: THEME.textLight, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: THEME.text, marginTop: 2 }}>{val}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Main tabs */}
+          <div style={{ display: "flex", gap: 4, background: "#f0ebe0", border: `1px solid ${THEME.cardBorder}`, borderRadius: 12, padding: 4, marginBottom: 28, maxWidth: 280 }}>
+            {MAIN_TABS.map((t, i) => (
+              <button key={t} onClick={() => setMainTab(i)} style={{
+                flex: 1, padding: "8px 14px",
+                background: mainTab === i ? THEME.card : "none",
+                border: `1px solid ${mainTab === i ? THEME.cardBorder : "transparent"}`,
+                borderRadius: 8, cursor: "pointer",
+                color: mainTab === i ? THEME.text : THEME.textLight,
+                fontSize: 12, fontWeight: mainTab === i ? 500 : 400,
+                transition: "all 0.15s"
+              }}>{t}</button>
+            ))}
+          </div>
+
+          {mainTab === 0 && currentWeek && (
+            <div>
+              <div style={{ fontSize: 13, color: THEME.accent, fontFamily: "'Playfair Display', serif", marginBottom: 20 }}>{currentWeek.label}</div>
+              <WeekView week={currentWeek} />
+            </div>
+          )}
+          {mainTab === 1 && <HistoryTab allWeeks={allWeeks} />}
+        </div>
+      </div>
+    </SubsCtx.Provider>
+    </OpenDropdownCtx.Provider>
+    </NutritionDBCtx.Provider>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+</script>
+</body>
+</html>
