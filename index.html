@@ -11,12 +11,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: #faf7f2;
-    color: #2d2416;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-  }
+  body { background: #faf7f2; color: #2d2416; font-family: 'DM Sans', sans-serif; font-weight: 300; }
   button { font-family: inherit; }
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: #f5f0e8; }
@@ -35,115 +30,55 @@ const WEEK_REGISTRY = [
 ];
 const CURRENT_WEEK_ID = WEEK_REGISTRY[WEEK_REGISTRY.length - 1].id;
 
-const NutritionDBCtx = createContext({});
-const useNutritionDB = () => useContext(NutritionDBCtx);
 const SubsCtx = createContext({ subs: {}, setSub: () => {} });
 const useSubs = () => useContext(SubsCtx);
 const OpenDropdownCtx = createContext({ openKey: null, setOpenKey: () => {} });
 const useOpenDropdown = () => useContext(OpenDropdownCtx);
 
-const CLR = {
-  cal: "#c8814a",
-  protein: "#6b9e6b",
-  carbs: "#c8a96a",
-  fat: "#7a9ec0",
-  fiber: "#9e7ab5"
-};
+const CLR = { cal: "#c8814a", protein: "#6b9e6b", carbs: "#c8a96a", fat: "#7a9ec0", fiber: "#9e7ab5" };
 
-const THEME = {
-  bg: "#faf7f2",
-  card: "#ffffff",
-  cardBorder: "#e8dfc8",
-  accent: "#c8814a",
-  accentSoft: "#f5ede0",
-  gold: "#c8a96a",
-  goldSoft: "#fdf4e3",
-  green: "#4a7a4a",
-  greenSoft: "#edf5ed",
-  text: "#2d2416",
-  textMid: "#7a6848",
-  textLight: "#b09070",
-  divider: "#e8dfc8",
-  tag: "#f5efe4",
-  tagBorder: "#d9c99a",
+const T = {
+  bg: "#faf7f2", card: "#ffffff", cardBorder: "#e8dfc8",
+  accent: "#c8814a", accentSoft: "#f5ede0",
+  gold: "#c8a96a", goldSoft: "#fdf4e3",
+  green: "#4a7a4a", greenSoft: "#edf5ed",
+  purple: "#7a5a9a", purpleSoft: "#f3eef9", purpleBorder: "#d0c0e4",
+  text: "#2d2416", textMid: "#7a6848", textLight: "#b09070",
+  divider: "#e8dfc8", tag: "#f5efe4", tagBorder: "#d9c99a",
 };
 
 function MacroPill({ label, value, unit, colorKey }) {
   return (
-    <span style={{
-      display: "inline-flex", alignItems: "center", gap: 5,
-      background: THEME.tag, border: `1px solid ${THEME.tagBorder}`,
-      borderRadius: 20, padding: "3px 10px",
-      fontSize: 11, fontWeight: 400, color: THEME.textMid
-    }}>
-      <span style={{ width: 6, height: 6, borderRadius: "50%", background: CLR[colorKey], flexShrink: 0 }} />
-      <span style={{ color: THEME.textLight, fontSize: 10, fontFamily: "monospace", letterSpacing: "0.06em", textTransform: "uppercase" }}>{label}</span>
-      <span style={{ color: THEME.text, fontWeight: 500 }}>{value}{unit}</span>
+    <span style={{ display:"inline-flex", alignItems:"center", gap:5, background:T.tag, border:`1px solid ${T.tagBorder}`, borderRadius:20, padding:"3px 10px", fontSize:11 }}>
+      <span style={{ width:6, height:6, borderRadius:"50%", background:CLR[colorKey], flexShrink:0 }} />
+      <span style={{ color:T.textLight, fontSize:10, fontFamily:"monospace", letterSpacing:"0.06em", textTransform:"uppercase" }}>{label}</span>
+      <span style={{ color:T.text, fontWeight:500 }}>{value}{unit}</span>
     </span>
   );
 }
 
-function MacroRow({ macros, compact }) {
-  const items = [
-    ["cal", macros.cal, "kcal"],
-    ["protein", macros.protein, "g"],
-    ["carbs", macros.carbs, "g"],
-    ["fat", macros.fat, "g"],
-  ];
-  if (macros.fiber != null) items.push(["fiber", macros.fiber, "g"]);
+function MacroRow({ macros }) {
+  const items = [["cal",macros.cal,"kcal"],["protein",macros.protein,"g"],["carbs",macros.carbs,"g"],["fat",macros.fat,"g"]];
+  if (macros.fiber != null) items.push(["fiber",macros.fiber,"g"]);
   return (
-    <div style={{ display: "flex", gap: 5, flexWrap: "wrap", margin: compact ? "6px 0 10px" : "10px 0 16px" }}>
-      {items.map(([key, val, unit]) => (
-        <MacroPill key={key} label={key} value={val} unit={unit} colorKey={key} />
-      ))}
+    <div style={{ display:"flex", gap:5, flexWrap:"wrap", margin:"8px 0 12px" }}>
+      {items.map(([k,v,u]) => <MacroPill key={k} label={k} value={v} unit={u} colorKey={k} />)}
     </div>
-  );
-}
-
-function SectionLabel({ children }) {
-  return (
-    <div style={{
-      fontFamily: "'Playfair Display', serif",
-      fontSize: 11, letterSpacing: "0.15em",
-      textTransform: "uppercase",
-      color: THEME.textLight,
-      marginBottom: 14
-    }}>{children}</div>
   );
 }
 
 function Card({ children, style }) {
-  return (
-    <div style={{
-      background: THEME.card,
-      border: `1px solid ${THEME.cardBorder}`,
-      borderRadius: 16,
-      padding: "18px 20px",
-      ...style
-    }}>
-      {children}
-    </div>
-  );
+  return <div style={{ background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:16, padding:"18px 20px", ...style }}>{children}</div>;
 }
 
-function Tag({ children, color }) {
-  return (
-    <span style={{
-      display: "inline-block",
-      background: color === "green" ? THEME.greenSoft : THEME.accentSoft,
-      color: color === "green" ? THEME.green : THEME.accent,
-      borderRadius: 20, padding: "2px 10px",
-      fontSize: 11, fontWeight: 500
-    }}>{children}</span>
-  );
+function SectionLabel({ children }) {
+  return <div style={{ fontFamily:"'Playfair Display', serif", fontSize:11, letterSpacing:"0.15em", textTransform:"uppercase", color:T.textLight, marginBottom:12 }}>{children}</div>;
 }
 
 function Steps({ items }) {
   return (
-    <ol style={{ paddingLeft: 18, margin: 0, display: "flex", flexDirection: "column", gap: 8 }}>
-      {items.map((step, i) => (
-        <li key={i} style={{ fontSize: 13, lineHeight: 1.65, color: THEME.textMid }}>{step}</li>
-      ))}
+    <ol style={{ paddingLeft:18, margin:0, display:"flex", flexDirection:"column", gap:8 }}>
+      {items.map((s,i) => <li key={i} style={{ fontSize:13, lineHeight:1.65, color:T.textMid }}>{s}</li>)}
     </ol>
   );
 }
@@ -155,49 +90,27 @@ function SubDropdown({ ing }) {
   const isOpen = openKey === ing.subKey;
   const current = subs[ing.subKey] || "default";
   const [menuStyle, setMenuStyle] = useState({});
-
   const toggle = () => {
     if (!isOpen && btnRef.current) {
-      const rect = btnRef.current.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const menuHeight = Math.min(280, 44 + ing.substitutions.length * 52);
-      const top = spaceBelow > menuHeight ? rect.bottom + 6 : rect.top - menuHeight - 6;
-      setMenuStyle({ top: Math.max(8, top), left: Math.min(rect.left, window.innerWidth - 230) });
+      const r = btnRef.current.getBoundingClientRect();
+      const below = window.innerHeight - r.bottom;
+      const mh = Math.min(280, 44 + ing.substitutions.length * 52);
+      setMenuStyle({ top: Math.max(8, below > mh ? r.bottom+6 : r.top-mh-6), left: Math.min(r.left, window.innerWidth-230) });
     }
     setOpenKey(isOpen ? null : ing.subKey);
   };
-
   return (
-    <div style={{ display: "inline-block" }}>
-      <button ref={btnRef} onClick={toggle} style={{
-        background: "none", border: `1px solid ${THEME.cardBorder}`,
-        borderRadius: 5, color: THEME.textLight,
-        padding: "1px 7px", cursor: "pointer", fontSize: 10, marginLeft: 6
-      }}>
-        swap {isOpen ? "▲" : "▼"}
-      </button>
+    <div style={{ display:"inline-block" }}>
+      <button ref={btnRef} onClick={toggle} style={{ background:"none", border:`1px solid ${T.cardBorder}`, borderRadius:5, color:T.textLight, padding:"1px 7px", cursor:"pointer", fontSize:10, marginLeft:6 }}>swap {isOpen?"▲":"▼"}</button>
       {isOpen && (
-        <div style={{
-          position: "fixed", ...menuStyle, zIndex: 1000,
-          background: THEME.card, border: `1px solid ${THEME.gold}`,
-          borderRadius: 12, padding: 6, width: 220,
-          boxShadow: "0 8px 32px rgba(80,50,10,0.12)"
-        }}>
-          <div onClick={() => { setSub(ing.subKey, null); setOpenKey(null); }} style={{
-            padding: "9px 12px", fontSize: 12, cursor: "pointer", borderRadius: 8,
-            color: current === "default" ? THEME.green : THEME.textMid,
-            background: current === "default" ? THEME.greenSoft : "none"
-          }}>
-            {ing.item} <span style={{ color: THEME.textLight, fontSize: 10 }}>(original)</span>
+        <div style={{ position:"fixed", ...menuStyle, zIndex:1000, background:T.card, border:`1px solid ${T.gold}`, borderRadius:12, padding:6, width:220, boxShadow:"0 8px 32px rgba(80,50,10,0.12)" }}>
+          <div onClick={() => { setSub(ing.subKey, null); setOpenKey(null); }} style={{ padding:"9px 12px", fontSize:12, cursor:"pointer", borderRadius:8, color:current==="default"?T.green:T.textMid, background:current==="default"?T.greenSoft:"none" }}>
+            {ing.item} <span style={{ color:T.textLight, fontSize:10 }}>(original)</span>
           </div>
           {ing.substitutions.map(sub => (
-            <div key={sub.id} onClick={() => { setSub(ing.subKey, sub.id); setOpenKey(null); }} style={{
-              padding: "9px 12px", fontSize: 12, cursor: "pointer", borderRadius: 8,
-              color: current === sub.id ? THEME.green : THEME.textMid,
-              background: current === sub.id ? THEME.greenSoft : "none"
-            }}>
+            <div key={sub.id} onClick={() => { setSub(ing.subKey, sub.id); setOpenKey(null); }} style={{ padding:"9px 12px", fontSize:12, cursor:"pointer", borderRadius:8, color:current===sub.id?T.green:T.textMid, background:current===sub.id?T.greenSoft:"none" }}>
               {sub.item}
-              {sub.note && <div style={{ fontSize: 10, color: THEME.textLight, marginTop: 2 }}>{sub.note}</div>}
+              {sub.note && <div style={{ fontSize:10, color:T.textLight, marginTop:2 }}>{sub.note}</div>}
             </div>
           ))}
         </div>
@@ -206,100 +119,56 @@ function SubDropdown({ ing }) {
   );
 }
 
-function IngredientList({ ingredients, subs }) {
-  const resolved = ingredients.map(ing => {
+function IngredientList({ ingredients }) {
+  const { subs } = useSubs();
+  const resolved = (ingredients||[]).map(ing => {
     if (!ing.subKey || !subs[ing.subKey]) return ing;
     const sub = ing.substitutions && ing.substitutions.find(s => s.id === subs[ing.subKey]);
     return sub ? { ...ing, item: sub.item } : ing;
   });
   return (
-    <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 4 }}>
-      {resolved.map((ing, i) => (
-        <li key={i} style={{ fontSize: 13, color: THEME.textMid, display: "flex", alignItems: "center" }}>
-          <span style={{ color: THEME.gold, marginRight: 8, fontSize: 10 }}>◆</span>
-          {ing.item}
-          {ing.subKey && ing.substitutions && <SubDropdown ing={ing} />}
+    <ul style={{ listStyle:"none", margin:0, padding:0, display:"flex", flexDirection:"column", gap:5 }}>
+      {resolved.map((ing,i) => (
+        <li key={i} style={{ fontSize:13, color:T.textMid, display:"flex", alignItems:"flex-start" }}>
+          <span style={{ color:T.gold, marginRight:8, fontSize:10, marginTop:3, flexShrink:0 }}>◆</span>
+          <span>{ing.item}{ing.subKey && ing.substitutions && <SubDropdown ing={ing} />}</span>
         </li>
       ))}
     </ul>
   );
 }
 
-function ExpandableSection({ title, emoji, children, defaultOpen }) {
-  const [open, setOpen] = useState(defaultOpen || false);
-  return (
-    <div style={{ borderBottom: `1px solid ${THEME.divider}` }}>
-      <button onClick={() => setOpen(!open)} style={{
-        width: "100%", background: "none", border: "none", cursor: "pointer",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "14px 0", textAlign: "left"
-      }}>
-        <span style={{ fontSize: 14, fontWeight: 500, color: THEME.text }}>
-          {emoji && <span style={{ marginRight: 8 }}>{emoji}</span>}{title}
-        </span>
-        <span style={{ color: THEME.textLight, fontSize: 12 }}>{open ? "▲" : "▼"}</span>
-      </button>
-      {open && <div style={{ paddingBottom: 16 }}>{children}</div>}
-    </div>
-  );
-}
-
-function MealCard({ meal, type }) {
-  const { subs } = useSubs();
+function MealCard({ meal }) {
+  const [showIng, setShowIng] = useState(false);
   const [showSteps, setShowSteps] = useState(false);
-  const [showIngredients, setShowIngredients] = useState(false);
-
+  const macros = meal.macros;
   const dayLabel = meal.day || meal.days;
-  const note = meal.note;
-  const macros = meal.macros || (type === "dinner" ? meal : null);
-
   return (
-    <Card style={{ marginBottom: 12 }}>
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 6 }}>
-        <div>
-          <div style={{ fontSize: 11, color: THEME.textLight, fontFamily: "monospace", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 4 }}>{dayLabel}</div>
-          <div style={{ fontSize: 16, fontWeight: 500, color: THEME.text, fontFamily: "'Playfair Display', serif" }}>{meal.name}</div>
-        </div>
-      </div>
-
+    <Card style={{ marginBottom:12 }}>
+      <div style={{ fontSize:11, color:T.textLight, fontFamily:"monospace", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:4 }}>{dayLabel}</div>
+      <div style={{ fontSize:16, fontWeight:500, color:T.text, fontFamily:"'Playfair Display', serif", marginBottom:4 }}>{meal.name}</div>
       {macros && <MacroRow macros={macros} />}
-
-      {note && (
-        <div style={{ fontSize: 12, color: THEME.textLight, lineHeight: 1.6, marginBottom: 10, fontStyle: "italic" }}>{note}</div>
-      )}
-
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      {meal.note && <div style={{ fontSize:12, color:T.textLight, lineHeight:1.65, marginBottom:10, fontStyle:"italic" }}>{meal.note}</div>}
+      <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
         {meal.ingredients && (
-          <button onClick={() => setShowIngredients(!showIngredients)} style={{
-            background: showIngredients ? THEME.goldSoft : THEME.tag,
-            border: `1px solid ${THEME.tagBorder}`,
-            borderRadius: 20, padding: "4px 12px", cursor: "pointer",
-            fontSize: 11, color: THEME.textMid
-          }}>
-            {showIngredients ? "▲" : "▼"} Ingredients
+          <button onClick={() => setShowIng(!showIng)} style={{ background:showIng?T.goldSoft:T.tag, border:`1px solid ${T.tagBorder}`, borderRadius:20, padding:"4px 12px", cursor:"pointer", fontSize:11, color:T.textMid }}>
+            {showIng?"▲":"▼"} Ingredients
           </button>
         )}
         {meal.steps && (
-          <button onClick={() => setShowSteps(!showSteps)} style={{
-            background: showSteps ? THEME.accentSoft : THEME.tag,
-            border: `1px solid ${THEME.tagBorder}`,
-            borderRadius: 20, padding: "4px 12px", cursor: "pointer",
-            fontSize: 11, color: THEME.textMid
-          }}>
-            {showSteps ? "▲" : "▼"} Steps
+          <button onClick={() => setShowSteps(!showSteps)} style={{ background:showSteps?T.accentSoft:T.tag, border:`1px solid ${T.tagBorder}`, borderRadius:20, padding:"4px 12px", cursor:"pointer", fontSize:11, color:T.textMid }}>
+            {showSteps?"▲":"▼"} Steps
           </button>
         )}
       </div>
-
-      {showIngredients && meal.ingredients && (
-        <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${THEME.divider}` }}>
+      {showIng && meal.ingredients && (
+        <div style={{ marginTop:12, paddingTop:12, borderTop:`1px solid ${T.divider}` }}>
           <SectionLabel>Ingredients</SectionLabel>
-          <IngredientList ingredients={meal.ingredients} subs={subs} />
+          <IngredientList ingredients={meal.ingredients} />
         </div>
       )}
-
       {showSteps && meal.steps && (
-        <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${THEME.divider}` }}>
+        <div style={{ marginTop:12, paddingTop:12, borderTop:`1px solid ${T.divider}` }}>
           <SectionLabel>Method</SectionLabel>
           <Steps items={meal.steps} />
         </div>
@@ -308,125 +177,84 @@ function MealCard({ meal, type }) {
   );
 }
 
-function SnackCard({ snack }) {
+function SnackCard({ snack, bedtime }) {
+  const [showWhy, setShowWhy] = useState(false);
   return (
-    <div style={{
-      background: THEME.tag, border: `1px solid ${THEME.tagBorder}`,
-      borderRadius: 12, padding: "12px 16px", marginBottom: 8
-    }}>
-      <div style={{ fontSize: 14, fontWeight: 500, color: THEME.text, marginBottom: 4 }}>{snack.name}</div>
-      <MacroRow macros={snack.macros} compact />
-      {snack.desc && <div style={{ fontSize: 12, color: THEME.textLight, lineHeight: 1.5 }}>{snack.desc}</div>}
-    </div>
-  );
-}
-
-function BedtimeSnackCard({ snack }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div style={{
-      background: "#f5f0f8", border: "1px solid #d8c8e8",
-      borderRadius: 14, padding: "14px 18px", marginBottom: 10
-    }}>
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 15, fontWeight: 500, color: THEME.text, fontFamily: "'Playfair Display', serif", marginBottom: 2 }}>{snack.name}</div>
-          {snack.timing && (
-            <div style={{ fontSize: 11, color: "#8a70a0", fontFamily: "monospace", letterSpacing: "0.06em", marginBottom: 6 }}>⏰ {snack.timing}</div>
-          )}
-          <MacroRow macros={snack.macros} compact />
-          <div style={{ fontSize: 12, color: THEME.textMid, lineHeight: 1.6 }}>{snack.desc}</div>
-        </div>
-      </div>
-      {snack.whyItWorks && (
+    <div style={{ background:bedtime?T.purpleSoft:T.tag, border:`1px solid ${bedtime?T.purpleBorder:T.tagBorder}`, borderRadius:14, padding:"14px 18px", marginBottom:10 }}>
+      {snack.day && <div style={{ fontSize:11, color:bedtime?T.purple:T.textLight, fontFamily:"monospace", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:4 }}>{snack.day}</div>}
+      <div style={{ fontSize:15, fontWeight:500, color:T.text, fontFamily:"'Playfair Display', serif", marginBottom:2 }}>{snack.name}</div>
+      {snack.timing && <div style={{ fontSize:11, color:T.purple, fontFamily:"monospace", marginBottom:6 }}>⏰ {snack.timing}</div>}
+      <MacroRow macros={snack.macros} />
+      <div style={{ fontSize:12, color:T.textMid, lineHeight:1.6 }}>{snack.desc}</div>
+      {bedtime && snack.whyItWorks && (
         <div>
-          <button onClick={() => setOpen(!open)} style={{
-            background: "none", border: "none", cursor: "pointer",
-            fontSize: 11, color: "#8a70a0", padding: "6px 0 0", display: "flex", alignItems: "center", gap: 4
-          }}>
-            {open ? "▲" : "▼"} Why this helps overnight
+          <button onClick={() => setShowWhy(!showWhy)} style={{ background:"none", border:"none", cursor:"pointer", fontSize:11, color:T.purple, padding:"6px 0 0", display:"flex", alignItems:"center", gap:4 }}>
+            {showWhy?"▲":"▼"} Why this helps overnight
           </button>
-          {open && (
-            <div style={{
-              marginTop: 8, padding: "10px 12px",
-              background: "#ede8f5", borderRadius: 8,
-              fontSize: 12, color: "#5a4870", lineHeight: 1.65
-            }}>
-              {snack.whyItWorks}
-            </div>
-          )}
+          {showWhy && <div style={{ marginTop:8, padding:"10px 12px", background:"#ede8f5", borderRadius:8, fontSize:12, color:"#5a4870", lineHeight:1.65 }}>{snack.whyItWorks}</div>}
         </div>
       )}
     </div>
   );
 }
 
-function ShoppingTab({ week }) {
-  const [checked, setChecked] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("padre_shopping_" + week.id) || "{}"); } catch { return {}; }
-  });
-
-  const toggle = (key) => {
-    setChecked(prev => {
-      const next = { ...prev, [key]: !prev[key] };
-      localStorage.setItem("padre_shopping_" + week.id, JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const categories = Object.entries(week.shopping);
-  const totalItems = categories.reduce((n, [, items]) => n + items.length, 0);
-  const checkedCount = Object.values(checked).filter(Boolean).length;
-
+function MealsTab({ meals, label, intro }) {
+  if (!meals || meals.length === 0) return <div style={{ color:T.textLight, fontSize:13 }}>No {label.toLowerCase()} data for this week.</div>;
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
-        <div style={{ fontSize: 13, color: THEME.textLight }}>
-          {checkedCount}/{totalItems} items
+      {intro && <div style={{ fontSize:12, color:T.textLight, lineHeight:1.65, marginBottom:16, background:T.goldSoft, border:`1px solid ${T.tagBorder}`, borderRadius:10, padding:"10px 14px" }}>{intro}</div>}
+      {meals.map((m,i) => <MealCard key={i} meal={m} />)}
+    </div>
+  );
+}
+
+function SnacksTab({ snacks, bedtime }) {
+  if (!snacks || snacks.length === 0) return <div style={{ color:T.textLight, fontSize:13 }}>No snack data for this week.</div>;
+  return (
+    <div>
+      {bedtime && (
+        <div style={{ fontSize:12, lineHeight:1.65, marginBottom:16, background:T.purpleSoft, border:`1px solid ${T.purpleBorder}`, borderRadius:10, padding:"12px 16px", color:"#5a4870" }}>
+          <strong>This one matters every night.</strong> Overnight blood sugar drops are likely contributing to broken sleep. A slow-digesting fat + protein snack 30–45 min before bed gives your liver something to work with overnight — preventing the low that wakes you up. Pick one of these every night.
         </div>
-        {checkedCount > 0 && (
-          <button onClick={() => {
-            setChecked({});
-            localStorage.removeItem("padre_shopping_" + week.id);
-          }} style={{
-            background: "none", border: `1px solid ${THEME.cardBorder}`,
-            borderRadius: 8, color: THEME.textLight, padding: "4px 12px",
-            cursor: "pointer", fontSize: 11
-          }}>Clear all</button>
+      )}
+      {snacks.map((s,i) => <SnackCard key={i} snack={s} bedtime={bedtime} />)}
+    </div>
+  );
+}
+
+function ShoppingTab({ week }) {
+  const [checked, setChecked] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("padre_shop_" + week.id) || "{}"); } catch { return {}; }
+  });
+  const toggle = key => setChecked(prev => {
+    const next = { ...prev, [key]: !prev[key] };
+    localStorage.setItem("padre_shop_" + week.id, JSON.stringify(next));
+    return next;
+  });
+  const cats = Object.entries(week.shopping || {});
+  const total = cats.reduce((n,[,items]) => n + items.length, 0);
+  const done = Object.values(checked).filter(Boolean).length;
+  return (
+    <div>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
+        <div style={{ fontSize:13, color:T.textLight }}>{done}/{total} items</div>
+        {done > 0 && (
+          <button onClick={() => { setChecked({}); localStorage.removeItem("padre_shop_"+week.id); }} style={{ background:"none", border:`1px solid ${T.cardBorder}`, borderRadius:8, color:T.textLight, padding:"4px 12px", cursor:"pointer", fontSize:11 }}>Clear all</button>
         )}
       </div>
-      {categories.map(([cat, items]) => (
-        <div key={cat} style={{ marginBottom: 24 }}>
-          <div style={{
-            fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase",
-            color: THEME.accent, fontWeight: 500, marginBottom: 10,
-            fontFamily: "'Playfair Display', serif"
-          }}>{cat}</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            {items.map((item, i) => {
-              const key = cat + ":" + i;
-              const done = !!checked[key];
+      {cats.map(([cat, items]) => (
+        <div key={cat} style={{ marginBottom:28 }}>
+          <div style={{ fontSize:12, letterSpacing:"0.1em", textTransform:"uppercase", color:T.accent, fontWeight:500, marginBottom:10, fontFamily:"'Playfair Display', serif", paddingBottom:6, borderBottom:`1px solid ${T.divider}` }}>{cat}</div>
+          <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
+            {items.map((item,i) => {
+              const key = cat+":"+i;
+              const isDone = !!checked[key];
               return (
-                <div key={key} onClick={() => toggle(key)} style={{
-                  display: "flex", alignItems: "flex-start", gap: 12,
-                  padding: "10px 14px", borderRadius: 10, cursor: "pointer",
-                  background: done ? THEME.greenSoft : THEME.card,
-                  border: `1px solid ${done ? "#c8e0c8" : THEME.cardBorder}`,
-                  transition: "all 0.15s"
-                }}>
-                  <div style={{
-                    width: 18, height: 18, borderRadius: "50%", flexShrink: 0, marginTop: 1,
-                    border: `2px solid ${done ? THEME.green : THEME.textLight}`,
-                    background: done ? THEME.green : "none",
-                    display: "flex", alignItems: "center", justifyContent: "center"
-                  }}>
-                    {done && <span style={{ color: "#fff", fontSize: 10 }}>✓</span>}
+                <div key={key} onClick={() => toggle(key)} style={{ display:"flex", alignItems:"flex-start", gap:12, padding:"10px 14px", borderRadius:10, cursor:"pointer", background:isDone?T.greenSoft:T.card, border:`1px solid ${isDone?"#c8e0c8":T.cardBorder}`, transition:"all 0.15s" }}>
+                  <div style={{ width:18, height:18, borderRadius:"50%", flexShrink:0, marginTop:1, border:`2px solid ${isDone?T.green:T.textLight}`, background:isDone?T.green:"none", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    {isDone && <span style={{ color:"#fff", fontSize:10 }}>✓</span>}
                   </div>
-                  <span style={{
-                    fontSize: 13, color: done ? THEME.textLight : THEME.text,
-                    textDecoration: done ? "line-through" : "none",
-                    lineHeight: 1.5
-                  }}>{typeof item === "string" ? item : item.display || item}</span>
+                  <span style={{ fontSize:13, color:isDone?T.textLight:T.text, textDecoration:isDone?"line-through":"none", lineHeight:1.5 }}>{typeof item === "string" ? item : item.display || item}</span>
                 </div>
               );
             })}
@@ -440,69 +268,41 @@ function ShoppingTab({ week }) {
 function NutritionTab({ week }) {
   const targets = week.targets && week.targets.padre;
   if (!targets) return null;
-
-  const cols = ["", "Cal", "Protein", "Carbs", "Fat", "Fiber"];
   const goal = targets.goal;
-
+  const cols = ["", "Cal", "Protein", "Carbs", "Fat", "Fiber"];
   return (
     <div>
-      <Card style={{ marginBottom: 16 }}>
-        <SectionLabel>Weekly Macro Targets</SectionLabel>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
-          {[["cal","Cal","kcal"], ["protein","Protein","g"], ["carbs","Carbs","g"], ["fat","Fat","g"], ["fiber","Fiber","g"]].map(([key, label, unit], i) => (
-            <div key={key} style={{
-              flex: "1 1 80px", minWidth: 70,
-              background: THEME.tag, border: `1px solid ${THEME.tagBorder}`,
-              borderRadius: 12, padding: "12px 14px", textAlign: "center"
-            }}>
-              <div style={{ fontSize: 20, fontWeight: 500, color: CLR[key], fontFamily: "'Playfair Display', serif" }}>{goal[i]}</div>
-              <div style={{ fontSize: 10, color: THEME.textLight, textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 2 }}>{label}{unit !== "kcal" ? " (g)" : ""}</div>
+      <Card style={{ marginBottom:16 }}>
+        <SectionLabel>Daily Targets</SectionLabel>
+        <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:18 }}>
+          {[["cal","Cal","kcal"],["protein","Protein","g"],["carbs","Carbs","g"],["fat","Fat","g"],["fiber","Fiber","g"]].map(([key,label,unit],i) => (
+            <div key={key} style={{ flex:"1 1 80px", minWidth:70, background:T.tag, border:`1px solid ${T.tagBorder}`, borderRadius:12, padding:"12px 14px", textAlign:"center" }}>
+              <div style={{ fontSize:20, fontWeight:500, color:CLR[key], fontFamily:"'Playfair Display', serif" }}>{goal[i]}</div>
+              <div style={{ fontSize:10, color:T.textLight, textTransform:"uppercase", letterSpacing:"0.08em", marginTop:2 }}>{label}{unit!=="kcal"?" (g)":""}</div>
             </div>
           ))}
         </div>
-        <div style={{ fontSize: 12, color: THEME.textLight, lineHeight: 1.6, borderTop: `1px solid ${THEME.divider}`, paddingTop: 12 }}>
-          <strong style={{ color: THEME.textMid }}>T2D notes:</strong> Carbs are intentionally low (~115g/day) and exclusively from low-GI sources — lentils (GI ~32), chickpeas, vegetables, small amounts of quinoa. No refined grains, no added sugar. The bedtime snack is not optional — it anchors overnight blood sugar and supports better sleep.
+        <div style={{ fontSize:12, color:T.textLight, lineHeight:1.65, borderTop:`1px solid ${T.divider}`, paddingTop:12 }}>
+          <strong style={{ color:T.textMid }}>T2D approach:</strong> Carbs are intentionally low (~115g/day) and exclusively from low-GI sources — lentils (GI ~32), chickpeas, vegetables, small amounts of quinoa and whole grain bread. No refined grains, no added sugar. The bedtime snack is built in every night to anchor overnight blood sugar.
         </div>
       </Card>
       <Card>
         <SectionLabel>Daily Breakdown</SectionLabel>
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+        <div style={{ overflowX:"auto" }}>
+          <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
             <thead>
-              <tr>
-                {cols.map(c => (
-                  <th key={c} style={{
-                    textAlign: c === "" ? "left" : "right",
-                    padding: "6px 10px",
-                    color: THEME.textLight, fontWeight: 400,
-                    fontFamily: "monospace", fontSize: 10,
-                    textTransform: "uppercase", letterSpacing: "0.08em",
-                    borderBottom: `1px solid ${THEME.divider}`
-                  }}>{c}</th>
-                ))}
-              </tr>
+              <tr>{cols.map(c => <th key={c} style={{ textAlign:c===""?"left":"right", padding:"6px 10px", color:T.textLight, fontWeight:400, fontFamily:"monospace", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", borderBottom:`1px solid ${T.divider}` }}>{c}</th>)}</tr>
             </thead>
             <tbody>
-              {targets.rows.map(([label, ...vals], i) => (
-                <tr key={i} style={{ borderBottom: `1px solid ${THEME.divider}` }}>
-                  <td style={{ padding: "10px 10px", color: THEME.text, fontWeight: 400, fontSize: 13 }}>{label}</td>
-                  {vals.map((v, j) => (
-                    <td key={j} style={{
-                      padding: "10px 10px", textAlign: "right",
-                      color: j === 0 ? CLR.cal : j === 1 ? CLR.protein : j === 2 ? CLR.carbs : j === 3 ? CLR.fat : CLR.fiber,
-                      fontFamily: "monospace", fontWeight: 500
-                    }}>{v}{j > 0 ? "g" : ""}</td>
-                  ))}
+              {targets.rows.map(([label,...vals],i) => (
+                <tr key={i} style={{ borderBottom:`1px solid ${T.divider}` }}>
+                  <td style={{ padding:"10px 10px", color:T.text, fontSize:13 }}>{label}</td>
+                  {vals.map((v,j) => <td key={j} style={{ padding:"10px 10px", textAlign:"right", color:j===0?CLR.cal:j===1?CLR.protein:j===2?CLR.carbs:j===3?CLR.fat:CLR.fiber, fontFamily:"monospace", fontWeight:500 }}>{v}{j>0?"g":""}</td>)}
                 </tr>
               ))}
-              <tr style={{ background: THEME.goldSoft }}>
-                <td style={{ padding: "10px 10px", color: THEME.textMid, fontFamily: "monospace", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em" }}>Goal</td>
-                {goal.map((v, i) => (
-                  <td key={i} style={{
-                    padding: "10px 10px", textAlign: "right",
-                    color: THEME.textMid, fontFamily: "monospace", fontWeight: 500
-                  }}>{v}{i > 0 ? "g" : ""}</td>
-                ))}
+              <tr style={{ background:T.goldSoft }}>
+                <td style={{ padding:"10px 10px", color:T.textMid, fontFamily:"monospace", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>Goal</td>
+                {goal.map((v,i) => <td key={i} style={{ padding:"10px 10px", textAlign:"right", color:T.textMid, fontFamily:"monospace", fontWeight:500 }}>{v}{i>0?"g":""}</td>)}
               </tr>
             </tbody>
           </table>
@@ -514,92 +314,37 @@ function NutritionTab({ week }) {
 
 function WeekView({ week }) {
   const [tab, setTab] = useState(0);
-  const TABS = ["Meals", "Shopping", "Nutrition"];
+  const TABS = [
+    { label: "Breakfast", emoji: "🌅", key: "breakfasts", bedtime: false },
+    { label: "Lunch",     emoji: "🫙", key: "lunches",    bedtime: false },
+    { label: "Dinner",    emoji: "🍽️", key: "dinners",    bedtime: false },
+    { label: "Snacks",    emoji: "🫒", key: "daytimeSnacks", bedtime: false },
+    { label: "Bedtime",   emoji: "🌙", key: "bedtimeSnacks", bedtime: true },
+  ];
+  const current = TABS[tab];
+  const isSnackTab = tab === 3 || tab === 4;
 
   return (
     <div>
-      <div style={{ display: "flex", gap: 4, background: "#f0ebe0", border: `1px solid ${THEME.cardBorder}`, borderRadius: 12, padding: 4, marginBottom: 24, maxWidth: 360 }}>
-        {TABS.map((t, i) => (
-          <button key={t} onClick={() => setTab(i)} style={{
-            flex: 1, padding: "8px 12px",
-            background: tab === i ? THEME.card : "none",
-            border: `1px solid ${tab === i ? THEME.cardBorder : "transparent"}`,
-            borderRadius: 8, cursor: "pointer",
-            color: tab === i ? THEME.text : THEME.textLight,
-            fontSize: 12, fontWeight: tab === i ? 500 : 400,
-            transition: "all 0.15s"
-          }}>{t}</button>
+      {/* Tab bar */}
+      <div style={{ display:"flex", gap:3, background:"#f0ebe0", border:`1px solid ${T.cardBorder}`, borderRadius:14, padding:4, marginBottom:24, overflowX:"auto" }}>
+        {TABS.map((t,i) => (
+          <button key={t.label} onClick={() => setTab(i)} style={{ flex:"1 0 auto", padding:"9px 12px", background:tab===i?(t.bedtime?"#ede8f5":T.card):"none", border:`1px solid ${tab===i?(t.bedtime?T.purpleBorder:T.cardBorder):"transparent"}`, borderRadius:10, cursor:"pointer", color:tab===i?(t.bedtime?T.purple:T.text):T.textLight, fontSize:12, fontWeight:tab===i?500:400, whiteSpace:"nowrap", transition:"all 0.15s" }}>
+            {t.emoji} {t.label}
+          </button>
         ))}
       </div>
 
-      {tab === 0 && (
-        <div>
-          {/* Breakfasts */}
-          {week.breakfasts && (
-            <div style={{ marginBottom: 32 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                <span style={{ fontSize: 18 }}>🌅</span>
-                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 400, color: THEME.text }}>Breakfasts</h2>
-              </div>
-              {week.breakfasts.map((b, i) => <MealCard key={i} meal={b} type="breakfast" />)}
-            </div>
-          )}
-          {/* Lunches */}
-          {week.lunches && (
-            <div style={{ marginBottom: 32 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                <span style={{ fontSize: 18 }}>🫙</span>
-                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 400, color: THEME.text }}>Lunches</h2>
-              </div>
-              <div style={{ fontSize: 12, color: THEME.textLight, marginBottom: 14, lineHeight: 1.6, background: THEME.goldSoft, border: `1px solid ${THEME.tagBorder}`, borderRadius: 10, padding: "10px 14px" }}>
-                💡 <strong>Batch cook tip:</strong> Make the chickpea bowls and lentil soup on Sunday — it takes about an hour total and sets you up for the whole week.
-              </div>
-              {week.lunches.map((l, i) => <MealCard key={i} meal={l} type="lunch" />)}
-            </div>
-          )}
-          {/* Dinners */}
-          {week.dinners && (
-            <div style={{ marginBottom: 32 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                <span style={{ fontSize: 18 }}>🍽️</span>
-                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 400, color: THEME.text }}>Dinners</h2>
-              </div>
-              {week.dinners.map((d, i) => <MealCard key={i} meal={d} type="dinner" />)}
-            </div>
-          )}
-          {/* Snacks */}
-          {week.snacks && (
-            <div style={{ marginBottom: 32 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                <span style={{ fontSize: 18 }}>🫒</span>
-                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 400, color: THEME.text }}>Daytime Snacks</h2>
-              </div>
-              <div style={{ fontSize: 12, color: THEME.textLight, marginBottom: 14 }}>Pick 1 per day depending on hunger. All blood-sugar friendly — nothing spikey.</div>
-              {week.snacks.map((s, i) => <SnackCard key={i} snack={s} />)}
-            </div>
-          )}
-          {/* Bedtime Snacks */}
-          {week.bedtimeSnacks && (
-            <div style={{ marginBottom: 32 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-                <span style={{ fontSize: 18 }}>🌙</span>
-                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 400, color: THEME.text }}>Bedtime Snack</h2>
-              </div>
-              <div style={{
-                fontSize: 12, lineHeight: 1.65, marginBottom: 16,
-                background: "#f0eaf8", border: "1px solid #d0c0e4",
-                borderRadius: 10, padding: "12px 16px", color: "#5a4870"
-              }}>
-                <strong>This one matters.</strong> Overnight blood sugar drops are likely causing the broken sleep. A slow-digesting fat + protein snack 30–45 min before bed gives the liver substrate to work with overnight — preventing the low that wakes him up. Pick one of these every night, not optional.
-              </div>
-              {week.bedtimeSnacks.map((s, i) => <BedtimeSnackCard key={i} snack={s} />)}
-            </div>
-          )}
-        </div>
+      {/* Tab content */}
+      {!isSnackTab && (
+        <MealsTab
+          meals={week[current.key]}
+          label={current.label}
+          intro={current.key === "lunches" ? "💡 Batch cook tip: Make a big pot of lentil soup on Sunday — it covers Tuesday and the rest of the week's lunches with almost no effort each day." : null}
+        />
       )}
-
-      {tab === 1 && <ShoppingTab week={week} />}
-      {tab === 2 && <NutritionTab week={week} />}
+      {tab === 3 && <SnacksTab snacks={week.daytimeSnacks} bedtime={false} />}
+      {tab === 4 && <SnacksTab snacks={week.bedtimeSnacks} bedtime={true} />}
     </div>
   );
 }
@@ -607,47 +352,30 @@ function WeekView({ week }) {
 function HistoryTab({ allWeeks }) {
   const [viewing, setViewing] = useState(null);
   const past = allWeeks.filter(w => w.id !== CURRENT_WEEK_ID).reverse();
-
   if (viewing) return (
     <div>
-      <button onClick={() => setViewing(null)} style={{
-        display: "flex", alignItems: "center", gap: 8,
-        background: "none", border: `1px solid ${THEME.cardBorder}`,
-        borderRadius: 8, color: THEME.textMid, padding: "7px 14px",
-        cursor: "pointer", fontSize: 12, marginBottom: 24
-      }}>← Back</button>
-      <div style={{ fontSize: 13, color: THEME.accent, fontFamily: "'Playfair Display', serif", marginBottom: 20 }}>{viewing.label}</div>
+      <button onClick={() => setViewing(null)} style={{ display:"flex", alignItems:"center", gap:8, background:"none", border:`1px solid ${T.cardBorder}`, borderRadius:8, color:T.textMid, padding:"7px 14px", cursor:"pointer", fontSize:12, marginBottom:24 }}>← Back</button>
+      <div style={{ fontSize:13, color:T.accent, fontFamily:"'Playfair Display', serif", marginBottom:20 }}>{viewing.label}</div>
       <WeekView week={viewing} />
     </div>
   );
-
   if (past.length === 0) return (
-    <div style={{ textAlign: "center", padding: "60px 0", color: THEME.textLight }}>
-      <div style={{ fontSize: 32, marginBottom: 12 }}>🫙</div>
-      <div style={{ fontSize: 14 }}>No past weeks yet.</div>
-      <div style={{ fontSize: 12, marginTop: 6, color: THEME.textLight }}>Past weeks appear here as you add new JSON files to weeks/.</div>
+    <div style={{ textAlign:"center", padding:"60px 0", color:T.textLight }}>
+      <div style={{ fontSize:32, marginBottom:12 }}>🫙</div>
+      <div style={{ fontSize:14 }}>No past weeks yet.</div>
+      <div style={{ fontSize:12, marginTop:6 }}>Past weeks appear here as you add new JSON files to weeks/.</div>
     </div>
   );
-
   return (
     <div>
-      <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: THEME.textLight, marginBottom: 16 }}>{past.length} past week{past.length !== 1 ? "s" : ""}</div>
+      <div style={{ fontSize:11, textTransform:"uppercase", letterSpacing:"0.1em", color:T.textLight, marginBottom:16 }}>{past.length} past week{past.length!==1?"s":""}</div>
       {past.map(week => (
-        <div key={week.id} style={{
-          background: THEME.card, border: `1px solid ${THEME.cardBorder}`,
-          borderRadius: 14, padding: "16px 20px",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          marginBottom: 10
-        }}>
+        <div key={week.id} style={{ background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:14, padding:"16px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
           <div>
-            <div style={{ fontSize: 15, fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>{week.label}</div>
-            <div style={{ fontSize: 11, color: THEME.textLight, fontFamily: "monospace" }}>{(week.dinners || []).length} dinners</div>
+            <div style={{ fontSize:15, fontFamily:"'Playfair Display', serif", marginBottom:4 }}>{week.label}</div>
+            <div style={{ fontSize:11, color:T.textLight, fontFamily:"monospace" }}>{(week.dinners||[]).length} dinners</div>
           </div>
-          <button onClick={() => setViewing(week)} style={{
-            background: THEME.accentSoft, border: `1px solid ${THEME.tagBorder}`,
-            borderRadius: 8, color: THEME.accent, padding: "7px 14px",
-            cursor: "pointer", fontSize: 12
-          }}>View</button>
+          <button onClick={() => setViewing(week)} style={{ background:T.accentSoft, border:`1px solid ${T.tagBorder}`, borderRadius:8, color:T.accent, padding:"7px 14px", cursor:"pointer", fontSize:12 }}>View</button>
         </div>
       ))}
     </div>
@@ -659,134 +387,80 @@ function App() {
   const [allWeeks, setAllWeeks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [nutritionDB, setNutritionDB] = useState({});
-  const [subs, setSubs] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("padre_subs") || "{}"); } catch { return {}; }
-  });
-  const setSub = useCallback((key, val) => {
-    setSubs(prev => {
-      const next = { ...prev };
-      if (val == null) delete next[key]; else next[key] = val;
-      localStorage.setItem("padre_subs", JSON.stringify(next));
-      return next;
-    });
-  }, []);
+  const [subs, setSubs] = useState(() => { try { return JSON.parse(localStorage.getItem("padre_subs")||"{}"); } catch { return {}; } });
+  const setSub = useCallback((key,val) => setSubs(prev => { const next={...prev}; if(val==null) delete next[key]; else next[key]=val; localStorage.setItem("padre_subs",JSON.stringify(next)); return next; }), []);
   const [openKey, setOpenKey] = useState(null);
 
   useEffect(() => {
-    fetch("nutrition.json").then(r => r.json()).then(setNutritionDB).catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    async function loadWeeks() {
+    async function load() {
       try {
-        const results = await Promise.all(
-          WEEK_REGISTRY.map(async ({ id, label }) => {
-            const res = await fetch("weeks/" + id + ".json");
-            if (!res.ok) throw new Error("Could not load " + id + ".json");
-            const data = await res.json();
-            return { ...data, id, label };
-          })
-        );
+        const results = await Promise.all(WEEK_REGISTRY.map(async ({id,label}) => {
+          const res = await fetch("weeks/"+id+".json");
+          if (!res.ok) throw new Error("Could not load "+id+".json");
+          return { ...await res.json(), id, label };
+        }));
         setAllWeeks(results);
-      } catch (e) {
-        setError(e.message);
-      } finally {
-        setLoading(false);
-      }
+      } catch(e) { setError(e.message); }
+      finally { setLoading(false); }
     }
-    loadWeeks();
+    load();
   }, []);
 
   const currentWeek = allWeeks.find(w => w.id === CURRENT_WEEK_ID);
-  const MAIN_TABS = ["This Week", "Past Weeks"];
 
-  if (loading) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", color: THEME.textLight, fontSize: 13 }}>
-      Loading Padre's Pantry…
-    </div>
-  );
+  const MAIN_TABS = [
+    { label:"This Week" },
+    { label:"Shopping" },
+    { label:"Nutrition" },
+    { label:"Past Weeks" },
+  ];
 
-  if (error) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ textAlign: "center", color: THEME.accent, fontSize: 13 }}>
-        <div style={{ marginBottom: 8, fontFamily: "'Playfair Display', serif", fontSize: 18 }}>Something's off</div>
-        <div style={{ color: THEME.textLight, fontSize: 11 }}>{error}</div>
-      </div>
-    </div>
-  );
+  if (loading) return <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", color:T.textLight, fontSize:13 }}>Loading Padre's Pantry…</div>;
+  if (error) return <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center" }}><div style={{ textAlign:"center", color:T.accent, fontSize:13 }}><div style={{ marginBottom:8, fontFamily:"'Playfair Display', serif", fontSize:18 }}>Something's off</div><div style={{ color:T.textLight, fontSize:11 }}>{error}</div></div></div>;
 
   return (
-    <NutritionDBCtx.Provider value={nutritionDB}>
     <OpenDropdownCtx.Provider value={{ openKey, setOpenKey }}>
     <SubsCtx.Provider value={{ subs, setSub }}>
-      <div style={{ minHeight: "100vh", padding: "40px 20px 80px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+      <div style={{ minHeight:"100vh", padding:"40px 20px 80px" }}>
+        <div style={{ maxWidth:860, margin:"0 auto" }}>
 
           {/* Header */}
-          <div style={{ marginBottom: 36, borderBottom: `1px solid ${THEME.divider}`, paddingBottom: 28 }}>
-            <div style={{ marginBottom: 18 }}>
-              <div style={{
-                fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase",
-                color: THEME.textLight, marginBottom: 8,
-                fontFamily: "'Playfair Display', serif"
-              }}>Mediterranean · Meal Plan</div>
-              <h1 style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: "clamp(2rem, 6vw, 3.2rem)",
-                fontWeight: 400, lineHeight: 1.1,
-                color: THEME.text
-              }}>
-                Padre's <span style={{ color: THEME.accent, fontStyle: "italic" }}>Pantry.</span>
-              </h1>
-            </div>
-
-            {/* Quick stats */}
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              {[
-                { label: "Calories / day", val: "~1,900 kcal" },
-                { label: "Protein", val: "~130g" },
-                { label: "Diet", val: "Mediterranean" },
-                { label: "Carb strategy", val: "Low-GI, high fiber" },
-              ].map(({ label, val }) => (
-                <div key={label} style={{
-                  background: THEME.card, border: `1px solid ${THEME.cardBorder}`,
-                  borderRadius: 10, padding: "8px 14px"
-                }}>
-                  <div style={{ fontSize: 10, color: THEME.textLight, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</div>
-                  <div style={{ fontSize: 13, fontWeight: 500, color: THEME.text, marginTop: 2 }}>{val}</div>
+          <div style={{ marginBottom:32, borderBottom:`1px solid ${T.divider}`, paddingBottom:28 }}>
+            <div style={{ fontSize:10, letterSpacing:"0.2em", textTransform:"uppercase", color:T.textLight, marginBottom:8, fontFamily:"'Playfair Display', serif" }}>Mediterranean · Meal Plan</div>
+            <h1 style={{ fontFamily:"'Playfair Display', serif", fontSize:"clamp(2rem,6vw,3.2rem)", fontWeight:400, lineHeight:1.1, color:T.text, marginBottom:18 }}>
+              Padre's <span style={{ color:T.accent, fontStyle:"italic" }}>Pantry.</span>
+            </h1>
+            <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+              {[["Calories / day","~1,900 kcal"],["Protein","~135g"],["Diet","Mediterranean"],["Carbs","Low-GI only"]].map(([l,v]) => (
+                <div key={l} style={{ background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:10, padding:"8px 14px" }}>
+                  <div style={{ fontSize:10, color:T.textLight, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
+                  <div style={{ fontSize:13, fontWeight:500, color:T.text, marginTop:2 }}>{v}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Main tabs */}
-          <div style={{ display: "flex", gap: 4, background: "#f0ebe0", border: `1px solid ${THEME.cardBorder}`, borderRadius: 12, padding: 4, marginBottom: 28, maxWidth: 280 }}>
-            {MAIN_TABS.map((t, i) => (
-              <button key={t} onClick={() => setMainTab(i)} style={{
-                flex: 1, padding: "8px 14px",
-                background: mainTab === i ? THEME.card : "none",
-                border: `1px solid ${mainTab === i ? THEME.cardBorder : "transparent"}`,
-                borderRadius: 8, cursor: "pointer",
-                color: mainTab === i ? THEME.text : THEME.textLight,
-                fontSize: 12, fontWeight: mainTab === i ? 500 : 400,
-                transition: "all 0.15s"
-              }}>{t}</button>
+          {/* Main nav */}
+          <div style={{ display:"flex", gap:3, background:"#f0ebe0", border:`1px solid ${T.cardBorder}`, borderRadius:14, padding:4, marginBottom:28, maxWidth:480 }}>
+            {MAIN_TABS.map((t,i) => (
+              <button key={t.label} onClick={() => setMainTab(i)} style={{ flex:1, padding:"9px 12px", background:mainTab===i?T.card:"none", border:`1px solid ${mainTab===i?T.cardBorder:"transparent"}`, borderRadius:10, cursor:"pointer", color:mainTab===i?T.text:T.textLight, fontSize:12, fontWeight:mainTab===i?500:400, transition:"all 0.15s" }}>{t.label}</button>
             ))}
           </div>
 
           {mainTab === 0 && currentWeek && (
             <div>
-              <div style={{ fontSize: 13, color: THEME.accent, fontFamily: "'Playfair Display', serif", marginBottom: 20 }}>{currentWeek.label}</div>
+              <div style={{ fontSize:13, color:T.accent, fontFamily:"'Playfair Display', serif", marginBottom:20 }}>{currentWeek.label}</div>
               <WeekView week={currentWeek} />
             </div>
           )}
-          {mainTab === 1 && <HistoryTab allWeeks={allWeeks} />}
+          {mainTab === 1 && currentWeek && <ShoppingTab week={currentWeek} />}
+          {mainTab === 2 && currentWeek && <NutritionTab week={currentWeek} />}
+          {mainTab === 3 && <HistoryTab allWeeks={allWeeks} />}
+
         </div>
       </div>
     </SubsCtx.Provider>
     </OpenDropdownCtx.Provider>
-    </NutritionDBCtx.Provider>
   );
 }
 
