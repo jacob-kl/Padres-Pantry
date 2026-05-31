@@ -31,8 +31,9 @@ const WEEK_REGISTRY = [
   { id: "2026-W23", label: "Week of June 1, 2026" },
 ];
 const CURRENT_WEEK_ID = WEEK_REGISTRY[WEEK_REGISTRY.length - 1].id;
-const WATER_GLASSES   = 10; // T2D guideline: 80oz/day
-const WATER_STORE_KEY = "padre_water";
+const WATER_GLASSES   = 12; // T2D guideline: 96oz/day
+const WATER_STORE_KEY  = "padre_water";
+const RATINGS_STORE_KEY = "padre_ratings";
 
 const SubsCtx        = createContext({ subs: {}, setSub: () => {} });
 const useSubs        = () => useContext(SubsCtx);
@@ -103,6 +104,115 @@ function Steps({ items }) {
     <ol style={{ paddingLeft:18, margin:0, display:"flex", flexDirection:"column", gap:8 }}>
       {items.map((s,i) => <li key={i} style={{ fontSize:13, lineHeight:1.65, color:T.textMid }}>{s}</li>)}
     </ol>
+  );
+}
+
+
+// ── Meal Rating ──────────────────────────────────────────────────────
+function loadRatings() {
+  try { return JSON.parse(localStorage.getItem(RATINGS_STORE_KEY) || "{}"); } catch { return {}; }
+}
+function saveRatings(r) { localStorage.setItem(RATINGS_STORE_KEY, JSON.stringify(r)); }
+
+function MealRating({ mealKey }) {
+  const [ratings, setRatings] = React.useState(loadRatings);
+  const [dragging, setDragging] = React.useState(false);
+  const [showSaved, setShowSaved] = React.useState(false);
+  const trackRef = React.useRef(null);
+  const saveTimer = React.useRef(null);
+  const current = ratings[mealKey];
+  const hasRating = current != null;
+
+  const posFromValue = v => `${(v / 10) * 100}%`;
+
+  const valueFromEvent = (e) => {
+    if (!trackRef.current) return 0;
+    const rect = trackRef.current.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    return Math.round(pct * 10);
+  };
+
+  const commit = (val) => {
+    const next = { ...loadRatings(), [mealKey]: val };
+    saveRatings(next);
+    setRatings(next);
+    clearTimeout(saveTimer.current);
+    setShowSaved(true);
+    saveTimer.current = setTimeout(() => setShowSaved(false), 1800);
+  };
+
+  const ratingColor = (v) => {
+    if (v == null) return T.textLight;
+    if (v <= 3) return "#c05050";
+    if (v <= 6) return T.gold;
+    return T.green;
+  };
+
+  const ratingLabel = (v) => {
+    if (v == null) return "";
+    if (v === 0) return "Not for me";
+    if (v <= 2) return "Didn't enjoy it";
+    if (v <= 4) return "It was okay";
+    if (v <= 6) return "Pretty good";
+    if (v <= 8) return "Really liked it";
+    if (v === 9) return "Excellent";
+    return "Perfect — make again!";
+  };
+
+  return (
+    <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${T.divider}` }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+        <span style={{ fontSize: 11, color: T.textLight, fontFamily: "'Playfair Display', serif", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+          Rate this meal
+        </span>
+        {hasRating && (
+          <span style={{ fontSize: 11, color: ratingColor(current), fontWeight: 500, transition: "color 0.2s" }}>
+            {showSaved ? "✓ saved" : `${current}/10 — ${ratingLabel(current)}`}
+          </span>
+        )}
+        {!hasRating && (
+          <span style={{ fontSize: 11, color: T.textLight, fontStyle: "italic" }}>slide to rate</span>
+        )}
+      </div>
+      <div style={{ position: "relative", height: 32, cursor: "pointer", userSelect: "none" }}
+        ref={trackRef}
+        onMouseDown={e => { setDragging(true); commit(valueFromEvent(e)); }}
+        onMouseMove={e => { if (dragging) commit(valueFromEvent(e)); }}
+        onMouseUp={() => setDragging(false)}
+        onMouseLeave={() => setDragging(false)}
+        onTouchStart={e => { setDragging(true); commit(valueFromEvent(e)); }}
+        onTouchMove={e => { e.preventDefault(); commit(valueFromEvent(e)); }}
+        onTouchEnd={() => setDragging(false)}
+      >
+        {/* Track */}
+        <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: 6, transform: "translateY(-50%)", background: "#f0e8d8", borderRadius: 3 }}>
+          {/* Fill */}
+          {hasRating && (
+            <div style={{ height: "100%", width: posFromValue(current), background: `linear-gradient(to right, #c05050, ${T.gold}, ${T.green})`, borderRadius: 3, transition: dragging ? "none" : "width 0.15s" }} />
+          )}
+        </div>
+        {/* Tick marks 0–10 */}
+        {Array.from({length: 11}, (_,i) => (
+          <div key={i} style={{ position: "absolute", top: "50%", left: `${(i/10)*100}%`, transform: "translate(-50%, -50%)", width: i === 0 || i === 10 ? 3 : 2, height: i === 0 || i === 10 ? 12 : 8, background: T.divider, borderRadius: 1 }} />
+        ))}
+        {/* Thumb */}
+        {hasRating && (
+          <div style={{ position: "absolute", top: "50%", left: posFromValue(current), transform: "translate(-50%, -50%)", width: 20, height: 20, borderRadius: "50%", background: ratingColor(current), border: "2px solid white", boxShadow: "0 2px 6px rgba(0,0,0,0.15)", transition: dragging ? "none" : "left 0.15s, background 0.2s", zIndex: 2 }}>
+            <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", fontSize: 9, fontWeight: 700, color: "white", fontFamily: "monospace" }}>{current}</span>
+          </div>
+        )}
+        {/* Ghost thumb at 0 when unrated */}
+        {!hasRating && (
+          <div style={{ position: "absolute", top: "50%", left: 0, transform: "translate(-50%, -50%)", width: 20, height: 20, borderRadius: "50%", background: T.divider, border: `2px dashed ${T.textLight}`, zIndex: 2 }} />
+        )}
+      </div>
+      {/* 0 and 10 labels */}
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+        <span style={{ fontSize: 9, color: T.textLight, fontFamily: "monospace" }}>0</span>
+        <span style={{ fontSize: 9, color: T.textLight, fontFamily: "monospace" }}>10</span>
+      </div>
+    </div>
   );
 }
 
@@ -191,8 +301,8 @@ function WaterTracker() {
           <div style={{ fontSize:11, letterSpacing:"0.12em", textTransform:"uppercase", color:T.blue, fontFamily:"'Playfair Display', serif", marginBottom:2 }}>Water Today</div>
           <div style={{ fontSize:12, color:T.textLight }}>
             {allDone
-              ? "✓ All 80oz done — well done."
-              : `${drunk * 8}oz of 80oz · ${ozLeft}oz to go`}
+              ? "✓ All 96oz done — well done."
+              : `${drunk * 8}oz of 96oz · ${ozLeft}oz to go`}
           </div>
         </div>
         <div style={{ fontSize:10, color:T.textLight, textAlign:"right", lineHeight:1.5 }}>
@@ -292,6 +402,7 @@ function MealCard({ meal }) {
       </div>
       {showIng && <div style={{ marginTop:12, paddingTop:12, borderTop:`1px solid ${T.divider}` }}><SectionLabel>Ingredients</SectionLabel><IngredientList ingredients={meal.ingredients} /></div>}
       {showSteps && <div style={{ marginTop:12, paddingTop:12, borderTop:`1px solid ${T.divider}` }}><SectionLabel>Method</SectionLabel><Steps items={meal.steps} /></div>}
+      <MealRating mealKey={(meal.day||meal.days||'') + ':' + (meal.name||'')} />
     </Card>
   );
 }
