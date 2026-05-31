@@ -1,664 +1,1311 @@
 {
-  "_v": 3,
-  "_note": "Week of June 1–7, 2026. Mediterranean T2D. 190lb 67M lightly active, retired, enjoys cooking. ~1900 kcal, ~135g protein, ~115g low-GI carbs, ~88g fat, 32g+ fiber. Every day is a different meal. No raw onion. Bedtime snack every night. Addressed to 'you' throughout.",
-
+  "_v": 4,
+  "_note": "Week of June 1–7, 2026. Mediterranean T2D. 190lb 67M lightly active, retired. <80g carbs/day, ~135g protein, ~95g fat, ~1900 kcal. Heart+brain health emphasis: omega-3s, olive oil, avocado, varied nuts. 1 bell pepper total. Max 2 cucumbers. Olives in sauces only. No raw onion. Bedtime snack nightly. Sardine toast has whipped feta spread.",
   "macros": {
     "cal": 1900,
     "protein": 135,
-    "carbs": 115,
-    "fat": 88,
-    "fiber": 32
+    "carbs": 75,
+    "fat": 98,
+    "fiber": 28
   },
-
   "breakfasts": [
     {
       "day": "Monday",
-      "name": "Mediterranean Yogurt Bowl",
-      "note": "A solid week-starter. The walnuts and flaxseed slow down the berry sugars so you get a steady morning instead of a spike-and-crash.",
-      "macros": { "cal": 285, "protein": 24, "carbs": 18, "fat": 12, "fiber": 5 },
+      "name": "Mediterranean Yogurt Bowl with Walnuts & Berries",
+      "note": "Walnuts are one of the best foods for heart and brain — high in ALA omega-3s and shown to reduce LDL. The berries add antioxidants without much sugar. No grains.",
+      "macros": {
+        "cal": 290,
+        "protein": 24,
+        "carbs": 16,
+        "fat": 13,
+        "fiber": 4
+      },
       "ingredients": [
-        { "item": "Plain nonfat Greek yogurt — 1 container (170g)" },
-        { "item": "Frozen mixed berries (thawed) — 1/3 cup" },
-        { "item": "Walnuts — 14g (~7 halves)" },
-        { "item": "Ground flaxseed — 1 tbsp" },
-        { "item": "Chia seeds — 1 tsp" }
+        {
+          "item": "Plain nonfat Greek yogurt — 1 container (170g)",
+          "nutritionKey": "Greek yogurt (plain nonfat)"
+        },
+        {
+          "item": "Frozen mixed berries (thawed) — 1/4 cup (~55g)",
+          "nutritionKey": "Mixed berries (frozen)"
+        },
+        {
+          "item": "Walnuts — 20g (~10 halves)",
+          "nutritionKey": "Walnuts"
+        },
+        {
+          "item": "Ground flaxseed — 1 tbsp",
+          "nutritionKey": "Ground flaxseed"
+        },
+        {
+          "item": "Chia seeds — 1 tsp",
+          "nutritionKey": "Chia seeds"
+        }
       ],
       "steps": [
-        "Thaw berries overnight in the fridge or microwave 45 sec.",
-        "Spoon yogurt into a bowl. Top with berries, walnuts, flaxseed, chia seeds.",
-        "No sweetener needed — the berries do the work."
+        "Thaw berries overnight in the fridge.",
+        "Spoon yogurt into bowl. Top with berries, walnuts, flaxseed, chia.",
+        "Eat slowly — this is a good way to start the week."
       ]
     },
     {
       "day": "Tuesday",
-      "name": "Two-Egg Scramble with Spinach & Feta",
-      "note": "Low-carb Tuesday — no bread today. Eggs and olive oil carry the morning. The feta adds a salty, creamy finish that makes this feel like more than a quick scramble.",
-      "macros": { "cal": 270, "protein": 20, "carbs": 5, "fat": 19, "fiber": 2 },
+      "name": "Two-Egg Scramble with Spinach & Avocado",
+      "note": "Avocado replaces any toast carbs and adds monounsaturated fat — excellent for heart health and keeps you full well into the afternoon. Zero grain today.",
+      "macros": {
+        "cal": 330,
+        "protein": 18,
+        "carbs": 9,
+        "fat": 26,
+        "fiber": 6
+      },
       "ingredients": [
-        { "item": "Eggs — 2 large" },
-        { "item": "Baby spinach — 1 large handful (~40g)" },
-        { "item": "Cherry tomatoes — 5–6, halved" },
-        { "item": "Feta (reduced fat) — 15g, crumbled" },
-        { "item": "Olive oil — 1 tsp" },
-        { "item": "Dried oregano, salt, black pepper" }
+        {
+          "item": "Eggs — 2 large",
+          "nutritionKey": "Eggs (large)"
+        },
+        {
+          "item": "Baby spinach — 1 large handful (~40g)",
+          "nutritionKey": "Baby spinach"
+        },
+        {
+          "item": "Cherry tomatoes — 5–6, halved (~60g)",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Avocado — 1/2 medium, sliced",
+          "nutritionKey": "Avocado"
+        },
+        {
+          "item": "Olive oil — 1 tsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Dried oregano, salt, black pepper"
+        }
       ],
       "steps": [
         "Heat olive oil in a small non-stick pan over medium.",
         "Add spinach and tomatoes, stir 1 min until spinach wilts.",
-        "Crack in eggs, scramble gently until just set.",
-        "Season with oregano and salt. Slide onto plate, crumble feta on top."
+        "Crack in eggs, scramble gently until just set. Season with oregano, salt, pepper.",
+        "Plate eggs with sliced avocado alongside. A squeeze of lemon on the avocado if you have it."
       ]
     },
     {
       "day": "Wednesday",
-      "name": "Almond Butter Toast with Chia",
-      "note": "Simple and satisfying. The almond butter fat slows down the toast carbs so you don't feel it. Good morning for getting Wednesday's batch cooking done while you eat.",
-      "macros": { "cal": 295, "protein": 10, "carbs": 24, "fat": 18, "fiber": 6 },
+      "name": "Sardine Toast with Whipped Feta & Lemon",
+      "note": "This one's worth trying even if sardines on toast sounds rough — the whipped feta spread changes everything. Creamy, salty, rich. The sardines just add a savory depth on top. High omega-3, excellent for heart and brain.",
+      "macros": {
+        "cal": 310,
+        "protein": 24,
+        "carbs": 18,
+        "fat": 16,
+        "fiber": 3
+      },
       "ingredients": [
-        { "item": "Whole grain bread — 1 slice" },
-        { "item": "Almond butter — 2 tbsp" },
-        { "item": "Ground flaxseed — 1 tbsp (sprinkle on top)" },
-        { "item": "Chia seeds — 1 tsp (sprinkle on top)" },
-        { "item": "Apple — 1 medium, sliced on the side" }
+        {
+          "item": "Sardines in olive oil — 1/2 can (~50g), drained",
+          "nutritionKey": "Sardines (canned in olive oil)"
+        },
+        {
+          "item": "Whole grain bread — 1 slice, toasted",
+          "nutritionKey": "Whole grain bread"
+        },
+        {
+          "item": "Feta (reduced fat) — 25g",
+          "nutritionKey": "Feta cheese (reduced fat)"
+        },
+        {
+          "item": "Greek yogurt — 1 tbsp (to whip the feta)",
+          "nutritionKey": "Greek yogurt (plain nonfat)"
+        },
+        {
+          "item": "Lemon juice — 1 tbsp",
+          "nutritionKey": "Lemon juice"
+        },
+        {
+          "item": "Cherry tomatoes — 4–5, halved (alongside)",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Black pepper, dried oregano"
+        }
       ],
       "steps": [
-        "Toast bread. Spread almond butter generously.",
-        "Sprinkle flaxseed and chia seeds over the top.",
-        "Eat with sliced apple on the side — but eat the toast first, apple after."
+        "Make whipped feta: mash feta + 1 tbsp Greek yogurt + a squeeze of lemon with a fork until smooth and spreadable. Takes 1 minute.",
+        "Toast the bread.",
+        "Spread whipped feta generously on the toast.",
+        "Lay sardines on top. Crack black pepper, pinch of oregano, squeeze of lemon.",
+        "Cherry tomatoes on the side."
       ]
     },
     {
       "day": "Thursday",
-      "name": "Sardine Toast with Lemon & Cucumber",
-      "note": "Worth trying if you haven't done sardines at breakfast — it's very common in Mediterranean countries. High omega-3, high protein, almost no carb impact. The lemon and cucumber freshen it up completely.",
-      "macros": { "cal": 260, "protein": 22, "carbs": 18, "fat": 13, "fiber": 3 },
+      "name": "Pistachio & Walnut Yogurt Bowl",
+      "note": "Pistachios are lower carb than most nuts and rich in lutein — good for eye and brain health. Combined with walnuts you get a broad range of healthy fats in one bowl.",
+      "macros": {
+        "cal": 310,
+        "protein": 22,
+        "carbs": 18,
+        "fat": 16,
+        "fiber": 5
+      },
       "ingredients": [
-        { "item": "Sardines in olive oil — 1/2 can (~50g), drained" },
-        { "item": "Whole grain bread — 1 slice, toasted" },
-        { "item": "Cucumber — 5–6 thin rounds" },
-        { "item": "Lemon juice — 1 tbsp" },
-        { "item": "Black pepper, dried oregano" }
+        {
+          "item": "Plain nonfat Greek yogurt — 1 container (170g)",
+          "nutritionKey": "Greek yogurt (plain nonfat)"
+        },
+        {
+          "item": "Pistachios (shelled) — 15g",
+          "nutritionKey": "Pistachios"
+        },
+        {
+          "item": "Walnuts — 14g (~7 halves)",
+          "nutritionKey": "Walnuts"
+        },
+        {
+          "item": "Ground flaxseed — 1 tbsp",
+          "nutritionKey": "Ground flaxseed"
+        },
+        {
+          "item": "Frozen mixed berries (thawed) — 1/4 cup",
+          "nutritionKey": "Mixed berries (frozen)"
+        },
+        {
+          "item": "Chia seeds — 1 tsp",
+          "nutritionKey": "Chia seeds"
+        }
       ],
       "steps": [
-        "Toast the bread.",
-        "Lay cucumber rounds on top. Fork the sardines over the cucumber.",
-        "Squeeze lemon juice over everything. Crack black pepper, pinch of oregano.",
-        "Eat open-faced."
+        "Thaw berries overnight.",
+        "Spoon yogurt into bowl. Top with pistachios, walnuts, flaxseed, chia, berries."
       ]
     },
     {
       "day": "Friday",
-      "name": "Greek Egg & Veggie Bake (2 servings — eat half now, save half)",
-      "note": "Takes about 25 minutes but makes two servings — eat one now, refrigerate one for a quick future breakfast or lunch. Good Friday project if you have a slow morning.",
-      "macros": { "cal": 310, "protein": 22, "carbs": 12, "fat": 20, "fiber": 4 },
+      "name": "Greek Egg & Veggie Bake (makes 2 — save half for lunch)",
+      "note": "Takes 25 min but earns its keep: you get breakfast now and an easy Friday lunch later. Good project for a slow morning.",
+      "macros": {
+        "cal": 295,
+        "protein": 21,
+        "carbs": 9,
+        "fat": 20,
+        "fiber": 3
+      },
       "ingredients": [
-        { "item": "Eggs — 4 large (for 2 servings)" },
-        { "item": "Cherry tomatoes — 1 cup (~150g), halved" },
-        { "item": "Bell pepper — 1 small, diced" },
-        { "item": "Baby spinach — 2 handfuls (~60g)" },
-        { "item": "Feta (reduced fat) — 30g, crumbled" },
-        { "item": "Kalamata olives — 6, halved" },
-        { "item": "Olive oil — 1 tbsp" },
-        { "item": "Dried oregano, garlic powder, salt, pepper" }
+        {
+          "item": "Eggs — 4 large (for 2 servings)",
+          "nutritionKey": "Eggs (large)"
+        },
+        {
+          "item": "Cherry tomatoes — 1 cup (~150g), halved",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Baby spinach — 2 handfuls (~60g)",
+          "nutritionKey": "Baby spinach"
+        },
+        {
+          "item": "Feta (reduced fat) — 30g, crumbled",
+          "nutritionKey": "Feta cheese (reduced fat)"
+        },
+        {
+          "item": "Olive oil — 1 tbsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Dried oregano, garlic powder, salt, pepper"
+        }
       ],
       "steps": [
         "Preheat oven to 375°F. Heat olive oil in a small oven-safe skillet over medium.",
-        "Add tomatoes, pepper, spinach — cook 3 min until softened. Season with oregano, garlic powder, salt.",
-        "Crack in 4 eggs evenly over the vegetables. Scatter feta and olives on top.",
-        "Transfer pan to oven. Bake 12–14 min until whites are set but yolks are still slightly soft.",
-        "Cut in half — eat one half now, cover and refrigerate the other."
+        "Add tomatoes and spinach, cook 3 min. Season with oregano, garlic powder, salt.",
+        "Crack in 4 eggs evenly. Scatter feta on top.",
+        "Bake 12–14 min until whites set, yolks slightly soft.",
+        "Cut in half — eat one half now, cover and refrigerate the other for lunch."
       ]
     },
     {
       "day": "Saturday",
-      "name": "Walnut & Berry Overnight Oats",
-      "note": "Make these Friday night before bed — they're ready when you wake up. Oats are rolled, not instant, which gives a much lower GI. The walnuts and flaxseed keep the carb absorption slow.",
-      "macros": { "cal": 340, "protein": 16, "carbs": 38, "fat": 14, "fiber": 8 },
+      "name": "Almond & Pecan Overnight Oats",
+      "note": "Pecans are one of the highest-antioxidant nuts — great for brain health and rarely used, so this adds real variety. Make Friday night, grab Saturday morning.",
+      "macros": {
+        "cal": 340,
+        "protein": 16,
+        "carbs": 30,
+        "fat": 18,
+        "fiber": 7
+      },
       "ingredients": [
-        { "item": "Rolled oats (not instant) — 40g dry" },
-        { "item": "Plain nonfat Greek yogurt — 1/2 container (~85g)" },
-        { "item": "Chia seeds — 1 tbsp" },
-        { "item": "Ground flaxseed — 1 tbsp" },
-        { "item": "Walnuts — 14g, roughly chopped" },
-        { "item": "Frozen mixed berries — 1/4 cup (add in the morning)" },
-        { "item": "Water or unsweetened almond milk — 1/3 cup" }
+        {
+          "item": "Rolled oats (not instant) — 35g dry",
+          "nutritionKey": "Rolled oats"
+        },
+        {
+          "item": "Plain nonfat Greek yogurt — 1/2 container (~85g)",
+          "nutritionKey": "Greek yogurt (plain nonfat)"
+        },
+        {
+          "item": "Chia seeds — 1 tbsp",
+          "nutritionKey": "Chia seeds"
+        },
+        {
+          "item": "Ground flaxseed — 1 tbsp",
+          "nutritionKey": "Ground flaxseed"
+        },
+        {
+          "item": "Pecans — 15g, roughly chopped",
+          "nutritionKey": "Pecans"
+        },
+        {
+          "item": "Almonds — 10g, roughly chopped",
+          "nutritionKey": "Almonds"
+        },
+        {
+          "item": "Frozen mixed berries — 1/4 cup (add in the morning)",
+          "nutritionKey": "Mixed berries (frozen)"
+        },
+        {
+          "item": "Unsweetened almond milk — 1/3 cup"
+        }
       ],
       "steps": [
-        "Friday night: combine oats, yogurt, chia, flaxseed, and liquid in a jar or container. Stir well, seal, refrigerate overnight.",
-        "Saturday morning: stir, top with berries and walnuts.",
-        "Eat cold — no heating needed. Add a splash more liquid if too thick."
+        "Friday night: combine oats, yogurt, chia, flaxseed, and almond milk in a jar. Stir, seal, refrigerate.",
+        "Saturday morning: top with pecans, almonds, and thawed berries.",
+        "Eat cold. Add a splash more almond milk if too thick."
       ]
     },
     {
       "day": "Sunday",
       "name": "Full Mediterranean Egg Plate",
-      "note": "Sunday deserves a proper breakfast. This is modeled after a Turkish-style morning spread — eggs, olives, tomatoes, cucumber, a little cheese, good bread. Takes 15 minutes and feels like a real sit-down.",
-      "macros": { "cal": 390, "protein": 24, "carbs": 24, "fat": 22, "fiber": 5 },
+      "note": "Sunday deserves a proper sit-down. Modeled after a Turkish-style spread — eggs, tomatoes, feta, a few things on the side. Fifteen minutes, no rush.",
+      "macros": {
+        "cal": 370,
+        "protein": 24,
+        "carbs": 14,
+        "fat": 26,
+        "fiber": 4
+      },
       "ingredients": [
-        { "item": "Eggs — 2 large, soft-boiled or fried in olive oil" },
-        { "item": "Whole grain bread — 1 slice, toasted" },
-        { "item": "Cherry tomatoes — 8–10, halved" },
-        { "item": "Cucumber — 1/2, sliced into rounds" },
-        { "item": "Kalamata olives — 6" },
-        { "item": "Feta (reduced fat) — 20g" },
-        { "item": "Olive oil — 1 tsp (for eggs)" },
-        { "item": "Dried oregano, salt, pepper" }
+        {
+          "item": "Eggs — 2 large, fried in olive oil or soft-boiled",
+          "nutritionKey": "Eggs (large)"
+        },
+        {
+          "item": "Cherry tomatoes — 8–10, halved",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Avocado — 1/2, sliced",
+          "nutritionKey": "Avocado"
+        },
+        {
+          "item": "Feta (reduced fat) — 20g",
+          "nutritionKey": "Feta cheese (reduced fat)"
+        },
+        {
+          "item": "Kalamata olives — 4 (on the side)",
+          "nutritionKey": "Kalamata olives"
+        },
+        {
+          "item": "Olive oil — 1 tsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Dried oregano, salt, pepper"
+        }
       ],
       "steps": [
-        "Soft-boil eggs: bring water to boil, lower eggs in, cook 7 min, transfer to cold water 1 min, peel. OR fry in olive oil over medium-low until whites set.",
-        "Toast bread.",
-        "Arrange everything on a plate: eggs, tomatoes, cucumber rounds, olives, feta crumbled over.",
+        "Fry eggs in olive oil over medium-low until whites just set, or soft-boil 7 min.",
+        "Arrange everything on a plate: eggs, tomatoes, avocado slices, feta crumbled over.",
+        "4 olives on the side — they're mixed in with the tomato and feta so you won't notice them much.",
         "Drizzle a little olive oil over the vegetables. Season with oregano, salt, pepper.",
-        "Eat slowly — it's Sunday."
+        "Eat slowly. It's Sunday."
       ]
     }
   ],
-
   "lunches": [
     {
       "day": "Monday",
-      "name": "Chickpea & Spinach Bowl with Lemon-Olive Oil Dressing",
-      "note": "Fast to put together if you prepped on Sunday. Chickpeas are filling and low-GI — you won't be hungry before dinner.",
-      "macros": { "cal": 430, "protein": 20, "carbs": 32, "fat": 24, "fiber": 11 },
+      "name": "Grilled Chicken & Avocado Bowl",
+      "note": "No grains — avocado and olive oil carry the fat calories. Spinach, tomatoes, a few olives folded into the dressing so you barely notice them individually. Clean, filling, very low carb.",
+      "macros": {
+        "cal": 470,
+        "protein": 40,
+        "carbs": 12,
+        "fat": 28,
+        "fiber": 7
+      },
       "ingredients": [
-        { "item": "Garbanzo beans — 1/2 can (~200g), drained and rinsed" },
-        { "item": "Baby spinach — 2 big handfuls (~80g)" },
-        { "item": "Cherry tomatoes — 10–12, halved" },
-        { "item": "Cucumber — 1/2, diced" },
-        { "item": "Kalamata olives — 8" },
-        { "item": "Feta (reduced fat) — 30g" },
-        { "item": "Olive oil — 1.5 tbsp" },
-        { "item": "Lemon juice — 2 tbsp" },
-        { "item": "Dried oregano, salt" }
+        {
+          "item": "Chicken breast — 150g raw",
+          "nutritionKey": "Chicken breast"
+        },
+        {
+          "item": "Avocado — 1/2 medium, diced",
+          "nutritionKey": "Avocado"
+        },
+        {
+          "item": "Baby spinach — 2 big handfuls (~80g)",
+          "nutritionKey": "Baby spinach"
+        },
+        {
+          "item": "Cherry tomatoes — 10–12, halved",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Kalamata olives — 5, roughly chopped (folded into dressing)",
+          "nutritionKey": "Kalamata olives"
+        },
+        {
+          "item": "Olive oil — 1.5 tbsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Lemon juice — 2 tbsp",
+          "nutritionKey": "Lemon juice"
+        },
+        {
+          "item": "Garlic powder, dried oregano, salt"
+        }
       ],
       "steps": [
-        "Rinse chickpeas, halve tomatoes, dice cucumber.",
-        "Build the bowl: spinach base, then chickpeas, tomatoes, cucumber, olives, feta.",
-        "Whisk olive oil + lemon + oregano + salt in a small bowl. Pour over and toss."
+        "Season chicken with garlic powder, oregano, salt. Pan-sear 5–6 min per side or bake 400°F for 22 min.",
+        "Finely chop the olives and whisk into olive oil + lemon + oregano dressing — they disappear into the flavour.",
+        "Build bowl: spinach base, cherry tomatoes, avocado. Slice chicken on top.",
+        "Pour dressing over everything."
       ]
     },
     {
       "day": "Tuesday",
-      "name": "Grilled Chicken over Lentil Soup",
-      "note": "Lentils have one of the lowest glycemic indexes of any food — around 32. A bowl of this at lunch sets you up for steady blood sugar all afternoon.",
-      "macros": { "cal": 475, "protein": 46, "carbs": 28, "fat": 18, "fiber": 10 },
+      "name": "Tuna-Stuffed Avocado",
+      "note": "No cooking at all. Avocado replaces any grain. High omega-3, very low carb, done in 5 minutes.",
+      "macros": {
+        "cal": 420,
+        "protein": 32,
+        "carbs": 10,
+        "fat": 28,
+        "fiber": 8
+      },
       "ingredients": [
-        { "item": "Chicken breast — 130g raw" },
-        { "item": "Lentils (dry green) — 45g dry (or use Sunday batch)" },
-        { "item": "Diced tomatoes (canned) — 1/2 cup" },
-        { "item": "Baby spinach — 1 handful (~40g)" },
-        { "item": "Olive oil — 1 tbsp" },
-        { "item": "Lemon juice — 1 tbsp" },
-        { "item": "Cumin, paprika, salt, oregano" }
+        {
+          "item": "Canned tuna in water — 1 can (142g), drained well",
+          "nutritionKey": "Canned tuna"
+        },
+        {
+          "item": "Avocado — 1 medium, halved and pitted"
+        },
+        {
+          "item": "Cherry tomatoes — 8, quartered",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Lemon juice — 1.5 tbsp",
+          "nutritionKey": "Lemon juice"
+        },
+        {
+          "item": "Olive oil — 1 tbsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Dried oregano, salt, black pepper"
+        }
       ],
       "steps": [
-        "If using Sunday batch: reheat one lentil portion in a pot or microwave.",
-        "Season chicken with olive oil, lemon, paprika, salt. Pan-sear 5–6 min per side over medium-high, or bake 400°F for 22 min.",
-        "Slice chicken, lay on top of hot lentil soup. A drizzle of olive oil to finish."
+        "Drain tuna well. Mix with lemon juice, olive oil, oregano, salt, pepper, and quartered tomatoes.",
+        "Halve avocado, remove pit. Scoop a little extra out of each half to make room.",
+        "Fill both halves with tuna. Eat straight from the skin."
       ]
     },
     {
       "day": "Wednesday",
-      "name": "Tuna-Stuffed Avocado with Cherry Tomatoes",
-      "note": "No cooking required. Avocado replaces any grain here and gives you the healthy fat that keeps you full. Good for a lighter midday when Wednesday dinner is more substantial.",
-      "macros": { "cal": 420, "protein": 32, "carbs": 14, "fat": 26, "fiber": 9 },
+      "name": "White Bean & Tomato Skillet (No Fish)",
+      "note": "A lighter Wednesday lunch since dinner is more substantial. Cannellini beans with canned tomatoes, olive oil, spinach — ready in 15 minutes. One of those things that tastes way more complex than the ingredient list suggests.",
+      "macros": {
+        "cal": 380,
+        "protein": 18,
+        "carbs": 34,
+        "fat": 16,
+        "fiber": 10
+      },
       "ingredients": [
-        { "item": "Canned tuna in water — 1 can (142g), drained well" },
-        { "item": "Avocado — 1 medium, halved and pitted" },
-        { "item": "Cherry tomatoes — 10, halved" },
-        { "item": "Cucumber — 1/3, diced small" },
-        { "item": "Lemon juice — 1.5 tbsp" },
-        { "item": "Olive oil — 1 tbsp" },
-        { "item": "Dried oregano, salt, black pepper" }
+        {
+          "item": "Cannellini beans — 1/2 can (~200g), drained",
+          "nutritionKey": "Cannellini beans"
+        },
+        {
+          "item": "Diced tomatoes (canned) — 3/4 cup",
+          "nutritionKey": "Diced tomatoes (canned)"
+        },
+        {
+          "item": "Baby spinach — 2 handfuls",
+          "nutritionKey": "Baby spinach"
+        },
+        {
+          "item": "Olive oil — 1.5 tbsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Lemon juice — 1 tbsp",
+          "nutritionKey": "Lemon juice"
+        },
+        {
+          "item": "Garlic powder, red pepper flakes, oregano, salt"
+        }
       ],
       "steps": [
-        "Drain tuna thoroughly. Mix with lemon juice, olive oil, oregano, salt, pepper.",
-        "Dice some tomatoes and cucumber into the tuna mix.",
-        "Halve the avocado, remove pit. Scoop a little extra avocado from each half to make room.",
-        "Fill each half with tuna mixture. Pile the remaining tomatoes around the plate."
+        "Heat olive oil in a wide pan over medium. Add garlic powder + red pepper flakes + oregano, stir 30 sec.",
+        "Add tomatoes + beans. Simmer 8 min until slightly thickened. Season with salt.",
+        "Stir in spinach until wilted. Finish with lemon.",
+        "Eat from the pan — no need to plate fancy."
       ]
     },
     {
       "day": "Thursday",
-      "name": "White Bean & Roasted Pepper Salad",
-      "note": "Roasted peppers from a jar work great here — no raw onion, and the sweet smokiness pairs perfectly with cannellini beans and good olive oil. This is a very Mediterranean combination.",
-      "macros": { "cal": 445, "protein": 22, "carbs": 34, "fat": 22, "fiber": 10 },
+      "name": "Lentil & Feta Salad with Brazil Nuts",
+      "note": "Brazil nuts appear nowhere else this week — 2 Brazil nuts gives you more than a full day's selenium, which supports thyroid and immune function. Lentils are the lowest-GI legume. Good combo.",
+      "macros": {
+        "cal": 450,
+        "protein": 24,
+        "carbs": 30,
+        "fat": 24,
+        "fiber": 11
+      },
       "ingredients": [
-        { "item": "Cannellini beans — 1/2 can (~200g), drained" },
-        { "item": "Jarred roasted red peppers — 80g, sliced" },
-        { "item": "Baby spinach — 2 handfuls" },
-        { "item": "Cherry tomatoes — 8, halved" },
-        { "item": "Kalamata olives — 8" },
-        { "item": "Feta (reduced fat) — 25g" },
-        { "item": "Olive oil — 1.5 tbsp" },
-        { "item": "Lemon juice — 2 tbsp" },
-        { "item": "Fresh or dried basil, salt, pepper" }
+        {
+          "item": "Lentils (dry green) — 45g dry, cooked and cooled",
+          "nutritionKey": "Lentils (dry green)"
+        },
+        {
+          "item": "Baby spinach — 2 handfuls",
+          "nutritionKey": "Baby spinach"
+        },
+        {
+          "item": "Cherry tomatoes — 8, halved",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Feta (reduced fat) — 30g",
+          "nutritionKey": "Feta cheese (reduced fat)"
+        },
+        {
+          "item": "Brazil nuts — 2 whole (~10g)",
+          "nutritionKey": "Brazil nuts"
+        },
+        {
+          "item": "Walnuts — 14g",
+          "nutritionKey": "Walnuts"
+        },
+        {
+          "item": "Olive oil — 1.5 tbsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Lemon juice — 2 tbsp",
+          "nutritionKey": "Lemon juice"
+        },
+        {
+          "item": "Cumin — 1/4 tsp, oregano, salt"
+        }
       ],
       "steps": [
-        "Drain and rinse beans. Drain and slice roasted peppers.",
-        "Toss spinach, beans, peppers, tomatoes, olives together in a bowl.",
-        "Dress with olive oil + lemon juice + basil + salt. Top with crumbled feta."
+        "Cook lentils: 45g dry + 225ml water, simmer 20 min, drain. Cool 10 min.",
+        "Combine with spinach and tomatoes in a bowl.",
+        "Dress with olive oil + lemon + cumin + oregano + salt. Toss.",
+        "Top with crumbled feta, walnuts, and 2 Brazil nuts broken in half."
       ]
     },
     {
       "day": "Friday",
-      "name": "Leftover Greek Egg Bake (from Friday breakfast) or Quick Sardine Plate",
-      "note": "If you saved the other half of Friday's egg bake — this is it. Eat it cold or warm it in a pan 3 min. If you finished it, the sardine plate below takes 5 minutes.",
-      "macros": { "cal": 310, "protein": 24, "carbs": 16, "fat": 18, "fiber": 5 },
+      "name": "Leftover Greek Egg Bake (from Friday breakfast)",
+      "note": "The second half of this morning's egg bake. Eat it warm (3 min in a pan) or cold — both work. Add a little olive oil drizzle and some cherry tomatoes on the side.",
+      "macros": {
+        "cal": 295,
+        "protein": 21,
+        "carbs": 9,
+        "fat": 20,
+        "fiber": 3
+      },
       "ingredients": [
-        { "item": "Leftover egg bake (1/2 portion from Friday breakfast)" },
-        { "item": "OR: Sardines in olive oil — 1 can, drained" },
-        { "item": "Whole grain bread — 1 slice, toasted (sardine option)" },
-        { "item": "Cherry tomatoes — a handful" },
-        { "item": "Cucumber — 1/2, sliced" },
-        { "item": "Olive oil — 1 tsp" },
-        { "item": "Lemon juice, salt, oregano" }
+        {
+          "item": "Leftover egg bake — 1/2 portion from Friday breakfast"
+        },
+        {
+          "item": "Cherry tomatoes — a small handful, halved",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Olive oil — 1 tsp drizzle",
+          "nutritionKey": "Olive oil"
+        }
       ],
       "steps": [
-        "Egg bake option: warm in a non-stick pan over medium-low for 3 min, covered. Eat with sliced cucumber and tomatoes on the side.",
-        "Sardine option: toast bread, lay sardines on top with lemon juice and oregano. Cucumber and tomatoes on the side dressed with olive oil + salt."
+        "Warm in a non-stick pan over medium-low for 3 min covered, or eat at room temp.",
+        "Plate with cherry tomatoes alongside. Drizzle olive oil over everything."
       ]
     },
     {
       "day": "Saturday",
-      "name": "Lentil & Feta Salad with Walnuts",
-      "note": "A more textured salad — lentils, walnuts, feta, bright dressing. Works great at room temperature so you don't need to reheat anything. Good Saturday lunch before a more relaxed dinner.",
-      "macros": { "cal": 460, "protein": 24, "carbs": 30, "fat": 24, "fiber": 12 },
+      "name": "Smoked Salmon & Avocado Plate",
+      "note": "No cooking. Smoked salmon is very high in omega-3s — DHA specifically, which is the fat the brain is literally made of. Avocado gives the healthy fat to round it out. Great Saturday lunch.",
+      "macros": {
+        "cal": 440,
+        "protein": 30,
+        "carbs": 10,
+        "fat": 30,
+        "fiber": 6
+      },
       "ingredients": [
-        { "item": "Lentils (dry green) — 50g dry, cooked and cooled" },
-        { "item": "Baby spinach — 2 handfuls" },
-        { "item": "Cherry tomatoes — 10, halved" },
-        { "item": "Cucumber — 1/2, diced" },
-        { "item": "Feta (reduced fat) — 30g" },
-        { "item": "Walnuts — 20g, roughly chopped" },
-        { "item": "Olive oil — 1.5 tbsp" },
-        { "item": "Lemon juice — 2 tbsp" },
-        { "item": "Cumin — 1/4 tsp, oregano, salt" }
+        {
+          "item": "Smoked salmon — 100g",
+          "nutritionKey": "Smoked salmon"
+        },
+        {
+          "item": "Avocado — 1/2 medium, sliced",
+          "nutritionKey": "Avocado"
+        },
+        {
+          "item": "Baby spinach — 2 handfuls",
+          "nutritionKey": "Baby spinach"
+        },
+        {
+          "item": "Cherry tomatoes — 8, halved",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Capers — 1 tsp (scattered over salmon)",
+          "nutritionKey": "Capers"
+        },
+        {
+          "item": "Olive oil — 1 tbsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Lemon juice — 1.5 tbsp",
+          "nutritionKey": "Lemon juice"
+        },
+        {
+          "item": "Black pepper"
+        }
       ],
       "steps": [
-        "Cook lentils: 50g dry + 250ml water, simmer 20 min. Drain, spread on a plate to cool 10 min.",
-        "Combine cooled lentils with spinach, tomatoes, cucumber in a bowl.",
-        "Dress with olive oil + lemon + cumin + oregano + salt. Toss.",
-        "Top with crumbled feta and walnuts."
+        "Arrange spinach on a plate. Lay smoked salmon over the top.",
+        "Add avocado slices and cherry tomatoes.",
+        "Scatter capers over the salmon.",
+        "Dress with olive oil + lemon. Crack black pepper over everything."
       ]
     },
     {
       "day": "Sunday",
-      "name": "Hummus & Chicken Plate with Warm Pita",
-      "note": "A generous Sunday spread. Slice some leftover chicken, or quickly grill a fresh piece. The hummus, pita, and veggies make it feel like a proper sit-down meal without a lot of dishes.",
-      "macros": { "cal": 490, "protein": 38, "carbs": 36, "fat": 22, "fiber": 8 },
+      "name": "Hummus & Chicken Plate",
+      "note": "A proper Sunday spread. Slice leftover chicken from dinner batch cook or grill a fresh piece. The hummus and vegetables make it feel like a full meal.",
+      "macros": {
+        "cal": 460,
+        "protein": 38,
+        "carbs": 22,
+        "fat": 22,
+        "fiber": 7
+      },
       "ingredients": [
-        { "item": "Chicken breast — 150g, grilled or from Sunday dinner batch" },
-        { "item": "Hummus — 80g (~5 tbsp)" },
-        { "item": "Whole wheat pita — 1 pita, warmed and torn" },
-        { "item": "Cherry tomatoes — 10, halved" },
-        { "item": "Cucumber — 1/2, sliced" },
-        { "item": "Kalamata olives — 6" },
-        { "item": "Olive oil — 1 tsp (drizzle over hummus)" },
-        { "item": "Lemon juice, dried oregano, paprika" }
+        {
+          "item": "Chicken breast — 150g, grilled",
+          "nutritionKey": "Chicken breast"
+        },
+        {
+          "item": "Hummus — 80g (~5 tbsp)",
+          "nutritionKey": "Hummus"
+        },
+        {
+          "item": "Cherry tomatoes — 10, halved",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Baby spinach — 2 handfuls",
+          "nutritionKey": "Baby spinach"
+        },
+        {
+          "item": "Olive oil — 1 tsp (drizzle over hummus)",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Lemon juice, paprika, dried oregano"
+        }
       ],
       "steps": [
-        "Warm pita: 30 sec per side in a dry pan, or wrap in foil and warm in oven 5 min.",
-        "Spread hummus on a plate, drizzle with olive oil, dust with paprika.",
-        "Arrange sliced chicken, tomatoes, cucumber, olives around the plate.",
-        "Tear pita into pieces for dipping. Squeeze lemon over everything."
+        "Grill or pan-sear chicken. Slice.",
+        "Spread hummus on the plate, drizzle with olive oil, dust with paprika.",
+        "Arrange chicken, tomatoes, and spinach around the plate.",
+        "Squeeze lemon over everything."
       ]
     }
   ],
-
   "dinners": [
     {
       "day": "Monday",
-      "name": "Baked Salmon with Roasted Zucchini & Small Quinoa",
-      "note": "Classic Mediterranean opener. Salmon's omega-3s are especially valuable for managing blood sugar and cardiovascular health. Keeping quinoa to 35g dry — just enough carb at dinner to stabilize overnight.",
-      "macros": { "cal": 570, "protein": 43, "carbs": 26, "fat": 30, "fiber": 5 },
+      "name": "Baked Salmon with Roasted Zucchini & Walnut Gremolata",
+      "note": "Gremolata (lemon zest + parsley + chopped walnuts) takes 2 minutes to make and turns a simple baked salmon into something restaurant-quality. Walnuts add crunch and more omega-3s on top of the salmon's own.",
+      "macros": {
+        "cal": 580,
+        "protein": 44,
+        "carbs": 12,
+        "fat": 38,
+        "fiber": 5
+      },
       "ingredients": [
-        { "item": "Atlantic salmon — 185g fillet" },
-        { "item": "Quinoa (dry) — 35g" },
-        { "item": "Zucchini — 1 large (~250g), sliced into half-moons" },
-        { "item": "Olive oil — 2 tbsp total" },
-        { "item": "Lemon juice — 2 tbsp" },
-        { "item": "Garlic powder, paprika, dried oregano, salt" }
+        {
+          "item": "Atlantic salmon — 185g fillet",
+          "nutritionKey": "Atlantic salmon (raw)"
+        },
+        {
+          "item": "Zucchini — 1 large (~250g), sliced into half-moons",
+          "nutritionKey": "Zucchini"
+        },
+        {
+          "item": "Walnuts — 20g, finely chopped (for gremolata)",
+          "nutritionKey": "Walnuts"
+        },
+        {
+          "item": "Olive oil — 2 tbsp total",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Lemon juice — 2 tbsp + zest of 1 lemon",
+          "nutritionKey": "Lemon juice"
+        },
+        {
+          "item": "Fresh or dried parsley — 1 tbsp (for gremolata)"
+        },
+        {
+          "item": "Garlic powder, paprika, salt"
+        }
       ],
       "steps": [
-        "Preheat oven to 400°F. Toss zucchini in 1 tbsp olive oil + salt. Spread on a baking sheet.",
-        "Place salmon on same sheet. Drizzle with remaining olive oil + lemon + garlic powder + paprika + oregano.",
-        "Roast 18–20 min until salmon flakes easily and zucchini edges are golden.",
-        "While roasting: rinse quinoa, simmer in 70ml water 15 min, fluff.",
-        "Plate: small quinoa mound, salmon on top, zucchini alongside. Extra lemon over everything."
+        "Preheat oven to 400°F. Toss zucchini in 1 tbsp olive oil + salt. Spread on sheet pan.",
+        "Season salmon with remaining olive oil + lemon juice + paprika + garlic powder.",
+        "Roast salmon and zucchini together 18–20 min.",
+        "While roasting: mix chopped walnuts + lemon zest + parsley + a pinch of salt in a small bowl. This is your gremolata.",
+        "Plate salmon and zucchini. Spoon walnut gremolata over the salmon."
       ]
     },
     {
       "day": "Tuesday",
-      "name": "Chicken Thighs with Roasted Peppers & Olives (No Grain)",
-      "note": "No grain tonight — extra olive oil and the thighs provide the fat calories. Everything goes on one pan. The pan juices are good — spoon them over at the end.",
-      "macros": { "cal": 520, "protein": 42, "carbs": 16, "fat": 32, "fiber": 5 },
+      "name": "Chicken Thighs with Roasted Zucchini & Eggplant",
+      "note": "No bell pepper tonight — zucchini and eggplant do all the work. Eggplant gets almost meaty when roasted well at high heat. Everything on one pan.",
+      "macros": {
+        "cal": 530,
+        "protein": 42,
+        "carbs": 14,
+        "fat": 32,
+        "fiber": 7
+      },
       "ingredients": [
-        { "item": "Chicken thighs (boneless, skinless) — 220g raw" },
-        { "item": "Bell peppers (red + yellow) — 2 large, sliced" },
-        { "item": "Cherry tomatoes — 100g" },
-        { "item": "Kalamata olives — 10" },
-        { "item": "Olive oil — 2 tbsp" },
-        { "item": "Lemon juice — 2 tbsp" },
-        { "item": "Dried oregano, thyme, garlic powder, salt" }
+        {
+          "item": "Chicken thighs (boneless, skinless) — 220g raw",
+          "nutritionKey": "Chicken breast"
+        },
+        {
+          "item": "Zucchini — 1 medium, chunked",
+          "nutritionKey": "Zucchini"
+        },
+        {
+          "item": "Eggplant — 1/2 small (~150g), cubed",
+          "nutritionKey": "Eggplant"
+        },
+        {
+          "item": "Cherry tomatoes — 100g",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Olive oil — 2 tbsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Lemon juice — 2 tbsp",
+          "nutritionKey": "Lemon juice"
+        },
+        {
+          "item": "Dried oregano, thyme, garlic powder, salt"
+        }
       ],
       "steps": [
-        "Marinate chicken in 1 tbsp olive oil + lemon + oregano + thyme + garlic powder — 20 min minimum, overnight is better.",
-        "Toss peppers and tomatoes in remaining olive oil + salt. Spread on a sheet pan.",
+        "Marinate chicken in 1 tbsp olive oil + lemon + oregano + thyme + garlic powder — 20 min min.",
+        "Toss zucchini, eggplant, tomatoes in remaining olive oil + salt. Spread on sheet pan.",
         "Nestle chicken among the vegetables. Bake at 425°F for 25–28 min until chicken hits 165°F.",
-        "Add olives to the pan in the last 5 min.",
         "Spoon the pan juices over everything before serving."
       ]
     },
     {
       "day": "Wednesday",
-      "name": "White Bean & Tomato Skillet with Cod",
-      "note": "One pan, almost no cleanup. Cannellini beans and tomatoes simmer into a thick sauce, then you nestle the cod right in to poach. Very Italian coastal — this is the kind of thing you'd get in a trattoria in Liguria.",
-      "macros": { "cal": 490, "protein": 44, "carbs": 30, "fat": 16, "fiber": 10 },
+      "name": "White Bean & Tomato Cod Skillet",
+      "note": "The same skillet base as Wednesday lunch but with cod nestled in to poach. One pan, very easy. The olive oil carries the meal calorically so no grain is needed.",
+      "macros": {
+        "cal": 490,
+        "protein": 44,
+        "carbs": 24,
+        "fat": 22,
+        "fiber": 9
+      },
       "ingredients": [
-        { "item": "Frozen cod — 190g, thawed" },
-        { "item": "Cannellini beans — 1/2 can (~200g), drained" },
-        { "item": "Diced tomatoes (canned) — 1 cup" },
-        { "item": "Baby spinach — 2 handfuls (~80g)" },
-        { "item": "Olive oil — 1.5 tbsp" },
-        { "item": "Lemon juice — 1 tbsp" },
-        { "item": "Garlic powder, dried oregano, red pepper flakes, salt" }
+        {
+          "item": "Frozen cod — 190g, thawed",
+          "nutritionKey": "Frozen cod"
+        },
+        {
+          "item": "Cannellini beans — 1/2 can (~200g), drained",
+          "nutritionKey": "Cannellini beans"
+        },
+        {
+          "item": "Diced tomatoes (canned) — 1 cup",
+          "nutritionKey": "Diced tomatoes (canned)"
+        },
+        {
+          "item": "Baby spinach — 2 handfuls (~80g)",
+          "nutritionKey": "Baby spinach"
+        },
+        {
+          "item": "Kalamata olives — 5, roughly chopped (into sauce)",
+          "nutritionKey": "Kalamata olives"
+        },
+        {
+          "item": "Olive oil — 1.5 tbsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Lemon juice — 1 tbsp",
+          "nutritionKey": "Lemon juice"
+        },
+        {
+          "item": "Garlic powder, red pepper flakes, oregano, salt"
+        }
       ],
       "steps": [
         "Thaw cod in cold water 20 min, pat dry.",
-        "Heat olive oil in a wide skillet over medium. Add garlic powder + oregano + red pepper flakes, stir 30 sec.",
-        "Add tomatoes and cannellini beans. Simmer 5 min, season with salt.",
-        "Nestle cod into the sauce. Cover and cook 8–10 min until it flakes easily.",
-        "Stir in spinach until wilted. Finish with lemon.",
-        "Serve straight from the pan."
+        "Heat olive oil in wide skillet over medium. Add garlic powder + red pepper flakes + oregano, stir 30 sec.",
+        "Add tomatoes + beans + chopped olives (they melt into the sauce). Simmer 5 min.",
+        "Nestle cod into sauce. Cover, cook 8–10 min until it flakes easily.",
+        "Stir in spinach until wilted. Finish with lemon. Serve from the pan."
       ]
     },
     {
       "day": "Thursday",
-      "name": "Turkey & Lentil Stuffed Bell Peppers",
-      "note": "Lentils inside the stuffing bulk the filling while adding fiber and slow carbs — you need less meat and the result is more satisfying. The feta on top melts into a salty golden crust.",
-      "macros": { "cal": 510, "protein": 40, "carbs": 30, "fat": 22, "fiber": 9 },
+      "name": "Turkey & Lentil Stuffed Zucchini Boats",
+      "note": "Bell pepper appears here as a 1/4 of one pepper mixed into the stuffing — just enough for colour and flavour without making it the main event. The zucchini boats replace any bell pepper as the vessel.",
+      "macros": {
+        "cal": 500,
+        "protein": 40,
+        "carbs": 22,
+        "fat": 26,
+        "fiber": 7
+      },
       "ingredients": [
-        { "item": "Ground turkey 93/7 — 180g raw" },
-        { "item": "Lentils (dry green) — 40g dry" },
-        { "item": "Bell peppers — 2 large, halved lengthwise, seeds removed" },
-        { "item": "Diced tomatoes (canned) — 1/2 cup" },
-        { "item": "Feta (reduced fat) — 20g" },
-        { "item": "Olive oil — 1 tbsp" },
-        { "item": "Garlic powder, cumin, paprika, oregano, salt" }
+        {
+          "item": "Ground turkey 93/7 — 180g raw",
+          "nutritionKey": "Ground turkey 93/7"
+        },
+        {
+          "item": "Lentils (dry green) — 35g dry",
+          "nutritionKey": "Lentils (dry green)"
+        },
+        {
+          "item": "Zucchini — 2 medium, halved lengthwise (boats)",
+          "nutritionKey": "Zucchini"
+        },
+        {
+          "item": "Bell pepper — 1/4 of one, finely diced (the only one this week)",
+          "nutritionKey": "Bell pepper"
+        },
+        {
+          "item": "Diced tomatoes (canned) — 1/2 cup",
+          "nutritionKey": "Diced tomatoes (canned)"
+        },
+        {
+          "item": "Feta (reduced fat) — 20g",
+          "nutritionKey": "Feta cheese (reduced fat)"
+        },
+        {
+          "item": "Olive oil — 1 tbsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Garlic powder, cumin, paprika, oregano, salt"
+        }
       ],
       "steps": [
-        "Cook lentils: 40g dry + 200ml water, simmer 18–20 min until just tender. Drain.",
-        "Cut peppers in half lengthwise, remove seeds. Brush lightly with olive oil. Set on a baking sheet cut-side up.",
-        "Brown turkey in a pan over medium-high. Season well. Mix in cooked lentils + tomatoes + spices. Simmer 5 min.",
-        "Fill pepper halves with the turkey-lentil mixture. Crumble feta on top.",
-        "Bake at 375°F for 30 min until peppers are tender and feta is golden."
+        "Cook lentils: 35g dry + 175ml water, simmer 18–20 min. Drain.",
+        "Halve zucchini lengthwise. Scoop out a little flesh from the centre with a spoon to make boats. Brush with olive oil.",
+        "Brown turkey in a pan over medium-high. Season well. Mix in lentils + tomatoes + diced bell pepper + spices. Simmer 5 min.",
+        "Fill zucchini boats with turkey-lentil mixture. Crumble feta on top.",
+        "Bake at 375°F for 25 min until zucchini is tender and feta is golden."
       ]
     },
     {
       "day": "Friday",
-      "name": "Shrimp with Chickpeas & Roasted Eggplant",
-      "note": "End-of-week dinner that's quick and lighter on the cooking. Shrimp cooks in under 5 minutes. The eggplant roasts while you prep everything else — it gets almost meaty when done right.",
-      "macros": { "cal": 500, "protein": 40, "carbs": 26, "fat": 24, "fiber": 9 },
+      "name": "Shrimp with Roasted Eggplant & Chickpeas",
+      "note": "End-of-week dinner that feels fresh. Shrimp cooks in 5 min. The eggplant and chickpeas roast while you prep. No bell pepper, no cucumber.",
+      "macros": {
+        "cal": 490,
+        "protein": 40,
+        "carbs": 22,
+        "fat": 24,
+        "fiber": 8
+      },
       "ingredients": [
-        { "item": "Frozen shrimp — 200g, thawed and peeled" },
-        { "item": "Garbanzo beans — 1/2 can (~200g), drained" },
-        { "item": "Eggplant — 1 small (~300g), cubed 1-inch" },
-        { "item": "Cherry tomatoes — 100g" },
-        { "item": "Olive oil — 2 tbsp total" },
-        { "item": "Lemon juice — 2 tbsp" },
-        { "item": "Garlic powder, paprika, cumin, oregano, salt" }
+        {
+          "item": "Frozen shrimp — 200g, thawed and peeled",
+          "nutritionKey": "Frozen shrimp"
+        },
+        {
+          "item": "Eggplant — 1/2 medium (~200g), cubed 1-inch",
+          "nutritionKey": "Eggplant"
+        },
+        {
+          "item": "Garbanzo beans — 1/2 can (~200g), drained",
+          "nutritionKey": "Garbanzo beans"
+        },
+        {
+          "item": "Cherry tomatoes — 100g",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Olive oil — 2 tbsp total",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Lemon juice — 2 tbsp",
+          "nutritionKey": "Lemon juice"
+        },
+        {
+          "item": "Garlic powder, cumin, paprika, salt"
+        }
       ],
       "steps": [
         "Preheat oven to 425°F. Toss eggplant + chickpeas + tomatoes in 1.5 tbsp olive oil + garlic powder + paprika + salt.",
-        "Spread on a large sheet pan. Roast 22 min, toss once at 12 min.",
-        "Meanwhile toss shrimp with remaining olive oil + cumin + paprika + salt.",
-        "When eggplant is done, push to the sides. Add shrimp to center of pan.",
-        "Roast another 5–6 min until shrimp are pink and curled.",
-        "Squeeze lemon over everything. Toss lightly and serve from the pan."
+        "Roast 20 min, toss once at 10 min.",
+        "Toss shrimp with remaining olive oil + cumin + paprika + salt.",
+        "Push vegetables to edges. Add shrimp to centre. Roast another 5–6 min until pink and curled.",
+        "Squeeze lemon over everything. Serve from the pan."
       ]
     },
     {
       "day": "Saturday",
       "name": "Sardine Puttanesca over Lentils",
-      "note": "A Saturday project worth making. Puttanesca (tomatoes, olives, capers, herbs) is bold enough to make sardines taste genuinely great — this is the sauce that converts people. Lentils instead of pasta keep the carbs low and the GI very manageable.",
-      "macros": { "cal": 530, "protein": 38, "carbs": 24, "fat": 26, "fiber": 9 },
+      "note": "The puttanesca sauce — tomatoes, a few chopped olives, capers, herbs — is so flavourful that sardines just taste like a meaty protein in it rather than anything 'fishy'. The olives are chopped fine and cooked in so they're more background flavour than anything you're biting into.",
+      "macros": {
+        "cal": 520,
+        "protein": 38,
+        "carbs": 24,
+        "fat": 26,
+        "fiber": 9
+      },
       "ingredients": [
         {
           "item": "Sardines in olive oil — 1 can (~100g), drained",
+          "nutritionKey": "Sardines (canned in olive oil)",
           "subKey": "sardine_swap",
           "substitutions": [
             {
               "id": "tuna",
-              "item": "Canned tuna in water — 2 cans (drain well)",
+              "item": "Canned tuna in water — 2 cans, drained well",
               "note": "Lower omega-3 but works great in this sauce.",
               "shopping": "Canned tuna in water — 2 cans (sardine swap, Sat)"
             }
           ]
         },
-        { "item": "Lentils (dry green) — 55g dry" },
-        { "item": "Diced tomatoes (canned) — 1 cup" },
-        { "item": "Kalamata olives — 10, roughly chopped" },
-        { "item": "Capers — 1 tbsp, rinsed" },
-        { "item": "Baby spinach — 2 handfuls (~80g)" },
-        { "item": "Olive oil — 1.5 tbsp" },
-        { "item": "Lemon juice — 1 tbsp" },
-        { "item": "Garlic powder, red pepper flakes, dried oregano, salt" }
+        {
+          "item": "Lentils (dry green) — 50g dry",
+          "nutritionKey": "Lentils (dry green)"
+        },
+        {
+          "item": "Diced tomatoes (canned) — 1 cup",
+          "nutritionKey": "Diced tomatoes (canned)"
+        },
+        {
+          "item": "Kalamata olives — 6, finely chopped (into sauce)",
+          "nutritionKey": "Kalamata olives"
+        },
+        {
+          "item": "Capers — 1 tbsp, rinsed",
+          "nutritionKey": "Capers"
+        },
+        {
+          "item": "Baby spinach — 2 handfuls",
+          "nutritionKey": "Baby spinach"
+        },
+        {
+          "item": "Olive oil — 1.5 tbsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Lemon juice — 1 tbsp",
+          "nutritionKey": "Lemon juice"
+        },
+        {
+          "item": "Garlic powder, red pepper flakes, oregano, salt"
+        }
       ],
       "steps": [
-        "Cook lentils: 55g dry + 275ml water, simmer 20 min until tender. Drain, season with salt.",
-        "Heat olive oil in a pan over medium. Add garlic powder + red pepper flakes + oregano, stir 30 sec.",
-        "Add tomatoes + olives + capers. Simmer 8–10 min until slightly thickened.",
-        "Open sardines, break into large chunks. Nestle into sauce. Heat through 2 min — don't stir too much.",
-        "Stir in spinach until wilted. Squeeze in lemon.",
-        "Spoon sauce over lentils."
+        "Cook lentils: 50g dry + 250ml water, simmer 20 min. Drain, season lightly.",
+        "Heat olive oil in pan over medium. Add garlic powder + red pepper flakes + oregano, 30 sec.",
+        "Add tomatoes + finely chopped olives + capers. Simmer 10 min until thick.",
+        "Break sardines into chunks, nestle into sauce. Heat 2 min.",
+        "Stir in spinach until wilted. Squeeze lemon.",
+        "Spoon over lentils."
       ]
     },
     {
       "day": "Sunday",
-      "name": "Greek Baked Chicken with Roasted Vegetables & Hummus",
-      "note": "Sunday dinner that also sets up the week. While the chicken and vegetables roast, get the lentil soup going on the stove for next week's lunches. The hummus and pita make this feel like a proper spread.",
-      "macros": { "cal": 550, "protein": 46, "carbs": 30, "fat": 24, "fiber": 8 },
+      "name": "Greek Baked Chicken with Roasted Tomatoes & Hummus",
+      "note": "Sunday dinner that sets up next week. Roasted cherry tomatoes instead of any bell pepper — they get jammy and sweet and are arguably better. Hummus on the side for dipping.",
+      "macros": {
+        "cal": 530,
+        "protein": 46,
+        "carbs": 20,
+        "fat": 28,
+        "fiber": 6
+      },
       "ingredients": [
-        { "item": "Chicken breast — 190g raw" },
-        { "item": "Zucchini — 1 medium, chunked" },
-        { "item": "Bell pepper — 1 large, chunked" },
-        { "item": "Cherry tomatoes — 100g" },
-        { "item": "Hummus — 60g (~4 tbsp)" },
-        { "item": "Whole wheat pita — 1/2, warmed" },
-        { "item": "Olive oil — 1.5 tbsp" },
-        { "item": "Lemon juice — 2 tbsp" },
-        { "item": "Dried oregano, garlic powder, paprika, salt" }
+        {
+          "item": "Chicken breast — 190g raw",
+          "nutritionKey": "Chicken breast"
+        },
+        {
+          "item": "Cherry tomatoes — 200g (large portion — these are the vegetable)",
+          "nutritionKey": "Cherry tomatoes"
+        },
+        {
+          "item": "Zucchini — 1 medium, chunked",
+          "nutritionKey": "Zucchini"
+        },
+        {
+          "item": "Hummus — 60g (~4 tbsp)",
+          "nutritionKey": "Hummus"
+        },
+        {
+          "item": "Olive oil — 2 tbsp",
+          "nutritionKey": "Olive oil"
+        },
+        {
+          "item": "Lemon juice — 2 tbsp",
+          "nutritionKey": "Lemon juice"
+        },
+        {
+          "item": "Dried oregano, garlic powder, paprika, salt"
+        }
       ],
       "steps": [
         "Marinate chicken in 1 tbsp olive oil + lemon + oregano + garlic powder + paprika — 30 min.",
-        "Toss vegetables in remaining olive oil + salt. Add to sheet pan with chicken.",
-        "Bake at 425°F for 25 min until chicken is 165°F and vegetables are roasted and slightly charred.",
-        "START BATCH COOK WHILE THIS BAKES: Put on a pot of lentil soup for next week (lentils + canned tomatoes + water + cumin + paprika + spinach, 30 min simmer). Hard-boil 4 eggs for bedtime snacks.",
-        "Warm pita half 30 sec in a dry pan. Plate chicken + vegetables. Hummus on the side.",
-        "Portion leftover lentil soup into 4 containers once cool."
+        "Toss cherry tomatoes + zucchini in remaining olive oil + salt. Spread on sheet pan with chicken.",
+        "Bake at 425°F for 25 min until chicken is 165°F and tomatoes are jammy and blistered.",
+        "BATCH COOK WHILE THIS BAKES: Start lentil soup on stove. Hard-boil 4 eggs for bedtime snacks.",
+        "Serve chicken + vegetables with hummus on the side. Spoon the tomato juices from the pan over everything."
       ]
     }
   ],
-
   "daytimeSnacks": [
     {
       "day": "Monday",
-      "name": "Hummus with Cucumber & Bell Pepper",
-      "macros": { "cal": 120, "protein": 6, "carbs": 12, "fat": 7, "fiber": 4 },
-      "desc": "4 tbsp hummus with cucumber rounds and bell pepper strips. Classic, filling, zero blood sugar impact worth worrying about."
+      "name": "Walnuts & Hard Boiled Egg",
+      "macros": {
+        "cal": 255,
+        "protein": 12,
+        "carbs": 3,
+        "fat": 22,
+        "fiber": 2
+      },
+      "desc": "20g walnuts (~10 halves) + 1 hard-boiled egg. High fat, moderate protein, nearly zero carb. Good heart-and-brain combo for a Monday."
     },
     {
       "day": "Tuesday",
-      "name": "Walnuts & Hard Boiled Egg",
-      "macros": { "cal": 260, "protein": 12, "carbs": 3, "fat": 22, "fiber": 2 },
-      "desc": "14g walnuts and 1 hard boiled egg. High fat, moderate protein, nearly zero carb. Good on a low-carb morning like Tuesday."
+      "name": "Greek Yogurt with Chia Seeds",
+      "macros": {
+        "cal": 125,
+        "protein": 18,
+        "carbs": 8,
+        "fat": 2,
+        "fiber": 4
+      },
+      "desc": "1 container plain nonfat Greek yogurt + 1 tbsp chia seeds. Stir and let sit 5 min to gel. High protein, very low sugar impact."
     },
     {
       "day": "Wednesday",
-      "name": "Greek Yogurt with Chia Seeds",
-      "macros": { "cal": 125, "protein": 18, "carbs": 8, "fat": 2, "fiber": 4 },
-      "desc": "1 container plain nonfat Greek yogurt + 1 tbsp chia seeds. Stir together, let sit 5 min to gel. High protein, very low sugar impact."
+      "name": "Almonds & a Few Cherry Tomatoes",
+      "macros": {
+        "cal": 205,
+        "protein": 7,
+        "carbs": 10,
+        "fat": 16,
+        "fiber": 4
+      },
+      "desc": "28g almonds (~23 almonds) + a small handful of cherry tomatoes. Simple, filling, no blood sugar impact worth worrying about."
     },
     {
       "day": "Thursday",
-      "name": "Almonds & Apple",
-      "macros": { "cal": 260, "protein": 7, "carbs": 30, "fat": 15, "fiber": 7 },
-      "desc": "28g almonds (~23 almonds) with 1 medium apple. The fat in the almonds slows the apple's sugar down. Eat the almonds first."
+      "name": "Smoked Salmon on Cucumber Rounds",
+      "macros": {
+        "cal": 140,
+        "protein": 16,
+        "carbs": 4,
+        "fat": 7,
+        "fiber": 1
+      },
+      "desc": "50g smoked salmon on 8–10 cucumber rounds. Top with a tiny squeeze of lemon and crack of pepper. Elegant and zero cooking."
     },
     {
       "day": "Friday",
-      "name": "Sardines on Half a Pita",
-      "macros": { "cal": 245, "protein": 22, "carbs": 16, "fat": 11, "fiber": 3 },
-      "desc": "Half a can of sardines on half a whole wheat pita with lemon juice and black pepper. Good Friday afternoon fuel before a lighter dinner."
+      "name": "Pecans & Walnuts",
+      "macros": {
+        "cal": 220,
+        "protein": 4,
+        "carbs": 5,
+        "fat": 22,
+        "fiber": 3
+      },
+      "desc": "15g pecans + 14g walnuts. A simple mixed nut snack with two of the best brain-health nuts available. Good Friday afternoon fuel."
     },
     {
       "day": "Saturday",
-      "name": "Feta, Olives & Cherry Tomatoes",
-      "macros": { "cal": 175, "protein": 7, "carbs": 7, "fat": 14, "fiber": 2 },
-      "desc": "30g feta, 10 kalamata olives, a handful of cherry tomatoes. Olive oil and a pinch of oregano if you want. Zero cooking, very Mediterranean."
+      "name": "Feta & Cherry Tomatoes",
+      "macros": {
+        "cal": 110,
+        "protein": 7,
+        "carbs": 5,
+        "fat": 8,
+        "fiber": 1
+      },
+      "desc": "30g feta + a handful of cherry tomatoes. Drizzle of olive oil, pinch of oregano. Zero cooking, very Mediterranean, easy Saturday snack."
     },
     {
       "day": "Sunday",
-      "name": "Almond Butter & Celery Sticks",
-      "macros": { "cal": 200, "protein": 7, "carbs": 9, "fat": 16, "fiber": 4 },
-      "desc": "2 tbsp almond butter with celery sticks for dipping. Good Sunday afternoon snack while the batch cooking is going."
+      "name": "Almond Butter & Celery",
+      "macros": {
+        "cal": 200,
+        "protein": 7,
+        "carbs": 9,
+        "fat": 16,
+        "fiber": 4
+      },
+      "desc": "2 tbsp almond butter with celery sticks for dipping. Good Sunday afternoon while batch cooking is underway."
     }
   ],
-
   "bedtimeSnacks": [
     {
       "day": "Monday",
       "name": "Almond Butter on Whole Grain Toast",
-      "macros": { "cal": 195, "protein": 7, "carbs": 19, "fat": 11, "fiber": 4 },
+      "macros": {
+        "cal": 195,
+        "protein": 7,
+        "carbs": 19,
+        "fat": 11,
+        "fiber": 4
+      },
       "timing": "30–45 min before bed",
-      "whyItWorks": "The fat in almond butter slows digestion of the toast carbs, releasing glucose gradually over 4–6 hours. This gives your liver something to work with overnight without any blood sugar spike going to bed.",
-      "desc": "1 slice whole grain toast + 2 tbsp almond butter. No honey, no fruit on top. Eat slowly."
+      "whyItWorks": "The fat in almond butter slows digestion of the toast carbs, releasing glucose gradually over 4–6 hours — giving your liver something to work with overnight without a spike going to bed.",
+      "desc": "1 slice whole grain toast + 2 tbsp almond butter. No honey. Eat slowly."
     },
     {
       "day": "Tuesday",
       "name": "Greek Yogurt & Walnuts",
-      "macros": { "cal": 190, "protein": 20, "carbs": 9, "fat": 10, "fiber": 2 },
+      "macros": {
+        "cal": 190,
+        "protein": 20,
+        "carbs": 9,
+        "fat": 10,
+        "fiber": 2
+      },
       "timing": "30–45 min before bed",
-      "whyItWorks": "Protein digests slowly and can help prevent your liver from releasing excess glucose overnight. The walnuts add fat to slow things further. Research in T2D patients has linked a Greek yogurt bedtime snack to improved fasting glucose.",
-      "desc": "1 container plain nonfat Greek yogurt + 14g walnuts. Stir together or eat the walnuts on the side."
+      "whyItWorks": "Protein digests slowly overnight. The walnuts add fat to slow things further. Research in T2D patients links a Greek yogurt bedtime snack to improved fasting glucose the next morning.",
+      "desc": "1 container plain nonfat Greek yogurt + 20g walnuts. Stir together or eat the walnuts on the side."
     },
     {
       "day": "Wednesday",
       "name": "Hard Boiled Egg & Almonds",
-      "macros": { "cal": 230, "protein": 13, "carbs": 6, "fat": 18, "fiber": 4 },
+      "macros": {
+        "cal": 230,
+        "protein": 13,
+        "carbs": 6,
+        "fat": 18,
+        "fiber": 4
+      },
       "timing": "30–45 min before bed",
-      "whyItWorks": "Almost pure fat and protein — virtually no glucose impact. Good option after a higher-carb dinner, or if you want something savory. The small carb from almonds is just enough to prevent lows without any spike.",
-      "desc": "1 hard boiled egg (from the Sunday batch) + 28g almonds. Salt the egg."
+      "whyItWorks": "Almost pure fat and protein — virtually no glucose impact. Good after a higher-carb dinner. The small carb from almonds is just enough to prevent overnight lows without any spike.",
+      "desc": "1 hard-boiled egg (from the Sunday batch) + 28g almonds. Salt the egg."
     },
     {
       "day": "Thursday",
       "name": "Small Bowl of Lentil Soup",
-      "macros": { "cal": 200, "protein": 14, "carbs": 28, "fat": 4, "fiber": 8 },
-      "timing": "45–60 min before bed (gives more time to digest)",
-      "whyItWorks": "Lentils have a glycemic index around 32 — one of the lowest of any carb source. They digest so slowly they effectively act as a timed-release glucose drip overnight. Particularly good after a lighter dinner.",
-      "desc": "About 3/4 cup of the batch-cooked lentil soup, reheated. Add a drizzle of olive oil."
+      "macros": {
+        "cal": 200,
+        "protein": 14,
+        "carbs": 28,
+        "fat": 4,
+        "fiber": 8
+      },
+      "timing": "45–60 min before bed",
+      "whyItWorks": "Lentils have a glycemic index around 32 — one of the lowest of any carb. They digest so slowly they act as a timed-release glucose drip overnight. Good pick after a lighter dinner.",
+      "desc": "About 3/4 cup of the batch-cooked lentil soup, reheated. Drizzle of olive oil."
     },
     {
       "day": "Friday",
       "name": "Almond Butter & Celery",
-      "macros": { "cal": 175, "protein": 7, "carbs": 8, "fat": 14, "fiber": 4 },
+      "macros": {
+        "cal": 175,
+        "protein": 7,
+        "carbs": 8,
+        "fat": 14,
+        "fiber": 4
+      },
       "timing": "30–45 min before bed",
       "whyItWorks": "High fat, moderate protein, very low carb. Good end-of-week option — satisfying without being heavy. The almond butter fat keeps things stable through the night.",
-      "desc": "2 tbsp almond butter with 3–4 celery sticks. Simple and quick."
+      "desc": "2 tbsp almond butter with 3–4 celery sticks."
     },
     {
       "day": "Saturday",
-      "name": "Greek Yogurt with Chia Seeds & Walnuts",
-      "macros": { "cal": 210, "protein": 20, "carbs": 11, "fat": 11, "fiber": 5 },
+      "name": "Greek Yogurt with Chia & Walnuts",
+      "macros": {
+        "cal": 210,
+        "protein": 20,
+        "carbs": 11,
+        "fat": 11,
+        "fiber": 5
+      },
       "timing": "30–45 min before bed",
-      "whyItWorks": "Protein plus fat plus the fiber from chia seeds — everything slows digestion and keeps blood sugar from dropping overnight. This combination is particularly good for sleep quality.",
-      "desc": "1 container plain nonfat Greek yogurt + 1 tbsp chia seeds + 14g walnuts. Stir and eat."
+      "whyItWorks": "Protein + fat + chia fiber — everything slows digestion and keeps blood sugar from dropping overnight. This combination is particularly good for sleep quality.",
+      "desc": "1 container plain nonfat Greek yogurt + 1 tbsp chia seeds + 14g walnuts."
     },
     {
       "day": "Sunday",
       "name": "Whole Grain Toast with Almond Butter & Flaxseed",
-      "macros": { "cal": 205, "protein": 8, "carbs": 20, "fat": 12, "fiber": 5 },
+      "macros": {
+        "cal": 205,
+        "protein": 8,
+        "carbs": 20,
+        "fat": 12,
+        "fiber": 5
+      },
       "timing": "30–45 min before bed",
-      "whyItWorks": "Same principle as Monday — fat slows carb absorption for a long overnight release. The flaxseed adds extra fiber and omega-3s. A good weekly bookend to how you started Monday.",
+      "whyItWorks": "Same principle as Monday — fat slows carb absorption for a long overnight release. The flaxseed adds extra fiber and omega-3s. A good bookend to the week.",
       "desc": "1 slice whole grain toast + 2 tbsp almond butter + 1 tbsp ground flaxseed sprinkled on top."
     }
   ],
-
   "shopping": {
     "Produce": [
-      "Baby spinach — 1 large bag (used almost every day)",
-      "Cherry tomatoes — 3 pints (~900g total)",
-      "Cucumber — 3 medium",
-      "Zucchini — 2 medium (Mon dinner + Sun dinner)",
-      "Eggplant — 1 small (Fri dinner)",
-      "Bell peppers — 6 total, mixed colors (Tue dinner + Thu dinner stuffing + Thu lunch + Sun dinner + Fri breakfast bake)",
-      "Celery — 1 bunch (Sun snack + Fri bedtime snack)",
-      "Avocado — 1 medium (Wed lunch)",
-      "Apple — 2 medium (Wed breakfast + Thu snack)",
+      "Baby spinach — 1 large bag",
+      "Cherry tomatoes — 3 pints (~900g, used every day)",
+      "Zucchini — 4 medium (Mon dinner + Tue dinner + Thu stuffing boats + Sun dinner)",
+      "Eggplant — 1 medium (Tue dinner + Fri dinner)",
+      "Avocado — 4 medium (Tue breakfast + Mon lunch + Tue lunch + Sat lunch + Sun breakfast)",
+      "Celery — 1 bunch (Sun snack + Fri bedtime)",
+      "Bell pepper — 1 (only 1/4 used in Thu dinner stuffing — rest is yours)",
+      "Cucumber — 1 (Thu snack only, ~10 rounds)",
       "Lemon — 3 (or 1 bottle lemon juice)"
     ],
     "Meat, Fish & Seafood": [
       "Atlantic salmon — 1 fillet (~185g, Mon dinner)",
-      "Frozen cod — ~380g (Wed + Thu dinner)",
+      "Frozen cod — ~190g (Wed dinner)",
       "Frozen shrimp — ~200g (Fri dinner)",
-      "Sardines in olive oil — 4 cans (Thu breakfast + Fri snack + Sat dinner + backup)",
-      "Chicken breast — ~650g total (Tue lunch + Sun lunch + Sun dinner + batch cook)",
+      "Smoked salmon — ~150g (Sat lunch + Thu snack)",
+      "Sardines in olive oil — 3–4 cans (Wed breakfast + Sat dinner + backup)",
+      "Chicken breast — ~700g total (Mon lunch + Sun lunch + Sun dinner + batch)",
       "Chicken thighs, boneless skinless — ~220g (Tue dinner)",
       "Ground turkey 93/7 — ~180g (Thu dinner)",
-      "Canned tuna in water — 2 cans (Wed lunch)"
+      "Canned tuna in water — 1 can (Tue lunch)"
     ],
     "Dairy & Eggs": [
-      "Plain nonfat Greek yogurt — 8 containers (Mon breakfast + Wed snack + Sat breakfast + Tue/Sat/Sun bedtime snack + extra)",
+      "Plain nonfat Greek yogurt — 8 containers (Mon + Thu + Sat breakfast, Wed breakfast spread, Tue + Sat + Sun bedtime snack, Tue snack)",
       "Feta cheese, reduced fat — 1 block (~200g)",
-      "Eggs — 1 dozen (Tue breakfast + Fri breakfast bake + bedtime snack batch)"
+      "Eggs — 1 dozen (Tue breakfast + Fri breakfast bake + bedtime batch)"
     ],
     "Canned & Jarred": [
-      "Garbanzo beans (chickpeas) — 3 cans (Mon lunch + Fri dinner + Sun lunch)",
-      "Cannellini beans — 2 cans (Wed dinner + Thu lunch)",
-      "Lentils, dry green — 400g bag (Tue/Sat lunch + Thu dinner + Sat dinner + Sun batch soup)",
-      "Diced tomatoes — 5 cans (batch soup + Wed dinner + Thu dinner + Sat dinner)",
-      "Jarred roasted red peppers — 1 jar (Thu lunch)",
-      "Capers — 1 small jar (Sat dinner)",
-      "Kalamata olives — 1 large jar (used throughout the week)",
-      "Hummus — 1 large container (~400g) (Thu lunch + Sun lunch + Sun dinner + Mon snack)",
+      "Garbanzo beans (chickpeas) — 1 can (Fri dinner)",
+      "Cannellini beans — 2 cans (Wed lunch + Wed dinner)",
+      "Lentils, dry green — 400g bag (Thu lunch + Thu dinner + Sat dinner + batch soup)",
+      "Diced tomatoes — 4 cans (Wed lunch + Wed dinner + Thu dinner + Sat dinner)",
+      "Capers — 1 small jar (Sat lunch + Sat dinner)",
+      "Kalamata olives — 1 jar (Mon + Wed + Sat dinner, Sun breakfast — always chopped into sauce)",
+      "Hummus — 1 container (~250g, Sun lunch + Sun dinner)",
       "Sardines in olive oil — see Meat & Fish above"
     ],
     "Bread, Grains & Nuts": [
-      "Whole grain bread — 1 loaf (Thu breakfast + Wed breakfast + Fri snack + bedtime snacks Mon/Sun)",
-      "Whole wheat pita — 1 pack (Fri snack + Sun dinner + Sun lunch)",
-      "Rolled oats (not instant) — small bag (Sat breakfast)",
-      "Quinoa, dry — small bag (Mon dinner, need ~35g)",
-      "Almonds — 1 bag (~200g) (Thu snack + Wed bedtime + Sun bedtime)",
-      "Walnuts — 1 bag (~200g) (Mon breakfast + Tue snack + Sat breakfast + Tue/Sat bedtime snacks)",
-      "Almond butter — 1 jar (Wed breakfast + Sun snack + Mon/Fri/Sun bedtime snacks)"
+      "Whole grain bread — 1 loaf (Wed breakfast + Mon/Sun bedtime snack)",
+      "Rolled oats (not instant) — small bag (Sat breakfast, ~35g)",
+      "Walnuts — 1 bag (~200g, used most days)",
+      "Almonds — 1 bag (~150g, Wed snack + Wed/Fri bedtime snack)",
+      "Pecans — small bag (~60g, Sat breakfast + Fri snack)",
+      "Pistachios (shelled) — small bag (~60g, Thu breakfast)",
+      "Brazil nuts — small bag (only need 2 for Thu lunch — great selenium source)",
+      "Almond butter — 1 jar (Mon/Fri/Sun bedtime + Sun snack)",
+      "Unsweetened almond milk — small carton (Sat breakfast)"
     ],
     "Pantry & Condiments": [
-      "Olive oil — 1 bottle (used heavily every day)",
-      "Ground flaxseed — 1 bag (Mon/Wed breakfast + Sun bedtime snack)",
-      "Chia seeds — 1 bag (Mon/Wed/Sat breakfast + Wed snack + Sat bedtime snack)",
+      "Olive oil — 1 bottle (used every meal)",
+      "Ground flaxseed — 1 bag",
+      "Chia seeds — 1 bag",
+      "Frozen mixed berries — 1 bag (Mon + Thu + Sat breakfast)",
       "Dried oregano — used almost every meal",
       "Garlic powder — used almost every meal",
-      "Paprika — used most meals",
-      "Cumin — lentil dishes + shrimp",
-      "Dried thyme — Tue dinner",
-      "Red pepper flakes — Wed dinner + Sat dinner",
+      "Paprika, cumin, thyme, red pepper flakes",
       "Salt, black pepper"
     ]
   },
-
   "targets": {
     "padre": {
       "rows": [
-        ["Breakfast",       300, 18, 20, 17,  5],
-        ["Lunch",           445, 31, 27, 22, 10],
-        ["Dinner",          525, 42, 26, 24,  8],
-        ["Daytime Snack",   195, 11, 13, 14,  4],
-        ["Bedtime Snack",   200, 12, 18, 10,  4],
-        ["Coffee / Tea",     40,  1,  8,  2,  0]
+        [
+          "Breakfast",
+          320,
+          21,
+          16,
+          20,
+          5
+        ],
+        [
+          "Lunch",
+          416,
+          29,
+          18,
+          24,
+          8
+        ],
+        [
+          "Dinner",
+          520,
+          42,
+          17,
+          28,
+          7
+        ],
+        [
+          "Daytime Snack",
+          179,
+          9,
+          6,
+          15,
+          3
+        ],
+        [
+          "Bedtime Snack",
+          201,
+          13,
+          17,
+          11,
+          4
+        ],
+        [
+          "Coffee / Tea",
+          40,
+          1,
+          6,
+          2,
+          0
+        ]
       ],
-      "total": [0,0,0,0,0],
-      "goal":  [1900, 135, 115, 88, 32]
+      "goal": [
+        1900,
+        135,
+        75,
+        98,
+        28
+      ]
     }
   }
 }
