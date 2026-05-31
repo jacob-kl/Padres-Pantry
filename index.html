@@ -508,6 +508,7 @@ function MealCard({ meal }) {
 // ── Snack Card ───────────────────────────────────────────────────────
 function SnackCard({ snack, bedtime }) {
   const [showWhy, setShowWhy] = useState(false);
+  const mealKey = (snack.day || '') + ':' + (snack.name || '');
   return (
     <div style={{ background:bedtime?T.purpleSoft:T.tag, border:`1px solid ${bedtime?T.purpleBorder:T.tagBorder}`, borderRadius:14, padding:"14px 18px", marginBottom:10 }}>
       {snack.day && <div style={{ fontSize:11, color:bedtime?T.purple:T.textLight, fontFamily:"monospace", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:4 }}>{snack.day}</div>}
@@ -523,6 +524,7 @@ function SnackCard({ snack, bedtime }) {
           {showWhy && <div style={{ marginTop:8, padding:"10px 12px", background:"#ede8f5", borderRadius:8, fontSize:12, color:"#5a4870", lineHeight:1.65 }}>{snack.whyItWorks}</div>}
         </div>
       )}
+      <MealRating mealKey={mealKey} />
     </div>
   );
 }
@@ -866,4 +868,3 @@ ReactDOM.render(<App />, document.getElementById("root"));
 </script>
 </body>
 </html>
- 
