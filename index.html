@@ -108,29 +108,40 @@ function Steps({ items }) {
 
 // ── Water Glass SVG ──────────────────────────────────────────────────
 function WaterGlass({ full, onClick, index }) {
-  // full = hasn't been drunk yet (shows water inside); empty = has been drunk
+  // full  = not yet drunk  → blue water inside, blue outline
+  // empty = drunk          → clear glass, dark outline, ✓ checkmark
   const W = 28, H = 38;
-  const waterColor = full ? "#7ab8d8" : "none";
-  const waterOpacity = full ? 0.85 : 0;
-  const ripple = full ? "#a8d4ea" : "none";
+  const strokeClr  = full ? "#5a9ec0" : "#2d2416";
+  const strokeW    = full ? 1.5 : 2;
   return (
     <button
       onClick={onClick}
-      title={full ? "Tap when you've drunk this glass" : "Mark as undrunk"}
-      style={{ background:"none", border:"none", cursor:"pointer", padding:3, display:"flex", flexDirection:"column", alignItems:"center", gap:3, opacity: full ? 1 : 0.35, transition:"opacity 0.2s" }}
+      title={full ? "Tap when you've drunk this glass" : "Tap to undo"}
+      style={{ background:"none", border:"none", cursor:"pointer", padding:3, display:"flex", flexDirection:"column", alignItems:"center", gap:3, transition:"transform 0.1s", transform:"scale(1)" }}
     >
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* glass body — slightly tapered */}
-        <path d={`M4 3 L${W-4} 3 L${W-6} ${H-3} L6 ${H-3} Z`} fill="none" stroke={full?"#5a9ec0":"#c0b090"} strokeWidth="1.5" strokeLinejoin="round"/>
-        {/* water fill */}
+        {/* clip to glass interior */}
         <clipPath id={`gc${index}`}>
-          <path d={`M5 3 L${W-5} 3 L${W-6} ${H-3} L6 ${H-3} Z`} />
+          <path d={`M5 3 L${W-5} 3 L${W-6.5} ${H-3} L6.5 ${H-3} Z`} />
         </clipPath>
-        <rect x="0" y={full?8:H} width={W} height={H} fill={waterColor} fillOpacity={waterOpacity} clipPath={`url(#gc${index})`} style={{ transition:"y 0.4s cubic-bezier(.4,0,.2,1)" }}/>
-        {/* ripple line on top of water */}
-        {full && <line x1="7" y1="11" x2={W-7} y2="11" stroke={ripple} strokeWidth="1" strokeOpacity="0.6"/>}
+        {/* water fill — slides out downward when drunk */}
+        <rect
+          x="0" y={full ? 6 : H+2}
+          width={W} height={H}
+          fill="#7ab8d8" fillOpacity="0.82"
+          clipPath={`url(#gc${index})`}
+          style={{ transition:"y 0.35s cubic-bezier(.4,0,.2,1)" }}
+        />
+        {/* ripple on water surface */}
+        {full && <line x1="7" y1="9" x2={W-7} y2="9" stroke="#a8d4ea" strokeWidth="1" strokeOpacity="0.7"/>}
+        {/* glass outline — always visible, heavier when drunk */}
+        <path d={`M4 3 L${W-4} 3 L${W-6} ${H-3} L6 ${H-3} Z`} fill="none" stroke={strokeClr} strokeWidth={strokeW} strokeLinejoin="round"/>
+        {/* checkmark when drunk */}
+        {!full && (
+          <text x={W/2} y={H/2+5} textAnchor="middle" fontSize="13" fill="#2d2416" fontWeight="bold" fontFamily="sans-serif">✓</text>
+        )}
       </svg>
-      <span style={{ fontSize:9, color: full ? T.blue : T.textLight, fontFamily:"monospace" }}>{index+1}</span>
+      <span style={{ fontSize:9, color: full ? T.blue : "#2d2416", fontFamily:"monospace", fontWeight: full ? 400 : 700 }}>{index+1}</span>
     </button>
   );
 }
@@ -627,6 +638,13 @@ function App() {
           {mainTab===1 && currentWeek && <ShoppingTab week={currentWeek} />}
           {mainTab===2 && currentWeek && <NutritionTab week={currentWeek} nutritionDB={nutritionDB} />}
           {mainTab===3 && <HistoryTab allWeeks={allWeeks} nutritionDB={nutritionDB} />}
+
+          {/* Footer */}
+          <div style={{ marginTop:64, paddingTop:28, borderTop:`1px solid ${T.divider}`, textAlign:"center" }}>
+            <div style={{ fontFamily:"'Playfair Display', serif", fontSize:"clamp(1.1rem,3vw,1.4rem)", fontWeight:400, fontStyle:"italic", color:T.textLight, letterSpacing:"0.02em" }}>
+              Love you, Padre. <span style={{ color:T.accent }}>♥</span>
+            </div>
+          </div>
 
         </div>
       </div>
