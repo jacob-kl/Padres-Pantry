@@ -17,36 +17,63 @@
   ::-webkit-scrollbar-track { background: #f5f0e8; }
   ::-webkit-scrollbar-thumb { background: #c8a96a; border-radius: 3px; }
   ::selection { background: #f0e0b8; }
+  @keyframes drainFill { from { transform: scaleY(1); } to { transform: scaleY(0); } }
+  @keyframes fillUp   { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
 
-const { useState, useEffect, useContext, createContext, useCallback } = React;
+const { useState, useEffect, useContext, createContext, useCallback, useRef } = React;
 
 const WEEK_REGISTRY = [
   { id: "2026-W23", label: "Week of June 1, 2026" },
 ];
 const CURRENT_WEEK_ID = WEEK_REGISTRY[WEEK_REGISTRY.length - 1].id;
+const WATER_GLASSES   = 10; // T2D guideline: 80oz/day
+const WATER_STORE_KEY = "padre_water";
 
-const SubsCtx = createContext({ subs: {}, setSub: () => {} });
-const useSubs = () => useContext(SubsCtx);
+const SubsCtx        = createContext({ subs: {}, setSub: () => {} });
+const useSubs        = () => useContext(SubsCtx);
 const OpenDropdownCtx = createContext({ openKey: null, setOpenKey: () => {} });
 const useOpenDropdown = () => useContext(OpenDropdownCtx);
 
-const CLR = { cal: "#c8814a", protein: "#6b9e6b", carbs: "#c8a96a", fat: "#7a9ec0", fiber: "#9e7ab5" };
-
-const T = {
-  bg: "#faf7f2", card: "#ffffff", cardBorder: "#e8dfc8",
-  accent: "#c8814a", accentSoft: "#f5ede0",
-  gold: "#c8a96a", goldSoft: "#fdf4e3",
-  green: "#4a7a4a", greenSoft: "#edf5ed",
-  purple: "#7a5a9a", purpleSoft: "#f3eef9", purpleBorder: "#d0c0e4",
-  text: "#2d2416", textMid: "#7a6848", textLight: "#b09070",
-  divider: "#e8dfc8", tag: "#f5efe4", tagBorder: "#d9c99a",
+const CLR = { cal:"#c8814a", protein:"#6b9e6b", carbs:"#c8a96a", fat:"#7a9ec0", fiber:"#9e7ab5" };
+const MICRO_CLR = {
+  sodium:"#e07040", potassium:"#6b9e6b", calcium:"#c8a96a", vitamin_d:"#e8c040",
+  magnesium:"#7ab0c0", zinc:"#a07ab0", vitamin_c:"#e8804a", vitamin_b12:"#6ab08a",
+  iron:"#c05050", vitamin_a:"#e0a030", folate:"#70a870", phosphorus:"#8090c0", selenium:"#b08060"
 };
 
+const T = {
+  bg:"#faf7f2", card:"#ffffff", cardBorder:"#e8dfc8",
+  accent:"#c8814a", accentSoft:"#f5ede0",
+  gold:"#c8a96a", goldSoft:"#fdf4e3",
+  green:"#4a7a4a", greenSoft:"#edf5ed",
+  blue:"#4a80b0", blueSoft:"#e8f2fa",
+  purple:"#7a5a9a", purpleSoft:"#f3eef9", purpleBorder:"#d0c0e4",
+  text:"#2d2416", textMid:"#7a6848", textLight:"#b09070",
+  divider:"#e8dfc8", tag:"#f5efe4", tagBorder:"#d9c99a",
+};
+
+// ── Midnight-reset water store ──────────────────────────────────────
+function getTodayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+function loadWater() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(WATER_STORE_KEY) || "{}");
+    if (raw.date !== getTodayKey()) return Array(WATER_GLASSES).fill(true); // full = undrunk
+    return raw.glasses;
+  } catch { return Array(WATER_GLASSES).fill(true); }
+}
+function saveWater(glasses) {
+  localStorage.setItem(WATER_STORE_KEY, JSON.stringify({ date: getTodayKey(), glasses }));
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────
 function MacroPill({ label, value, unit, colorKey }) {
   return (
     <span style={{ display:"inline-flex", alignItems:"center", gap:5, background:T.tag, border:`1px solid ${T.tagBorder}`, borderRadius:20, padding:"3px 10px", fontSize:11 }}>
@@ -56,25 +83,21 @@ function MacroPill({ label, value, unit, colorKey }) {
     </span>
   );
 }
-
 function MacroRow({ macros }) {
+  // fiber intentionally excluded — it lives in micros
   const items = [["cal",macros.cal,"kcal"],["protein",macros.protein,"g"],["carbs",macros.carbs,"g"],["fat",macros.fat,"g"]];
-  if (macros.fiber != null) items.push(["fiber",macros.fiber,"g"]);
   return (
     <div style={{ display:"flex", gap:5, flexWrap:"wrap", margin:"8px 0 12px" }}>
       {items.map(([k,v,u]) => <MacroPill key={k} label={k} value={v} unit={u} colorKey={k} />)}
     </div>
   );
 }
-
 function Card({ children, style }) {
   return <div style={{ background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:16, padding:"18px 20px", ...style }}>{children}</div>;
 }
-
 function SectionLabel({ children }) {
   return <div style={{ fontFamily:"'Playfair Display', serif", fontSize:11, letterSpacing:"0.15em", textTransform:"uppercase", color:T.textLight, marginBottom:12 }}>{children}</div>;
 }
-
 function Steps({ items }) {
   return (
     <ol style={{ paddingLeft:18, margin:0, display:"flex", flexDirection:"column", gap:8 }}>
@@ -83,10 +106,105 @@ function Steps({ items }) {
   );
 }
 
+// ── Water Glass SVG ──────────────────────────────────────────────────
+function WaterGlass({ full, onClick, index }) {
+  // full = hasn't been drunk yet (shows water inside); empty = has been drunk
+  const W = 28, H = 38;
+  const waterColor = full ? "#7ab8d8" : "none";
+  const waterOpacity = full ? 0.85 : 0;
+  const ripple = full ? "#a8d4ea" : "none";
+  return (
+    <button
+      onClick={onClick}
+      title={full ? "Tap when you've drunk this glass" : "Mark as undrunk"}
+      style={{ background:"none", border:"none", cursor:"pointer", padding:3, display:"flex", flexDirection:"column", alignItems:"center", gap:3, opacity: full ? 1 : 0.35, transition:"opacity 0.2s" }}
+    >
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* glass body — slightly tapered */}
+        <path d={`M4 3 L${W-4} 3 L${W-6} ${H-3} L6 ${H-3} Z`} fill="none" stroke={full?"#5a9ec0":"#c0b090"} strokeWidth="1.5" strokeLinejoin="round"/>
+        {/* water fill */}
+        <clipPath id={`gc${index}`}>
+          <path d={`M5 3 L${W-5} 3 L${W-6} ${H-3} L6 ${H-3} Z`} />
+        </clipPath>
+        <rect x="0" y={full?8:H} width={W} height={H} fill={waterColor} fillOpacity={waterOpacity} clipPath={`url(#gc${index})`} style={{ transition:"y 0.4s cubic-bezier(.4,0,.2,1)" }}/>
+        {/* ripple line on top of water */}
+        {full && <line x1="7" y1="11" x2={W-7} y2="11" stroke={ripple} strokeWidth="1" strokeOpacity="0.6"/>}
+      </svg>
+      <span style={{ fontSize:9, color: full ? T.blue : T.textLight, fontFamily:"monospace" }}>{index+1}</span>
+    </button>
+  );
+}
+
+// ── Water Tracker ────────────────────────────────────────────────────
+function WaterTracker() {
+  const [glasses, setGlasses] = useState(loadWater);
+
+  // midnight reset
+  useEffect(() => {
+    function checkMidnight() {
+      const stored = JSON.parse(localStorage.getItem(WATER_STORE_KEY) || "{}");
+      if (stored.date !== getTodayKey()) {
+        const fresh = Array(WATER_GLASSES).fill(true);
+        setGlasses(fresh);
+        saveWater(fresh);
+      }
+    }
+    const msUntilMidnight = () => {
+      const now = new Date();
+      const midnight = new Date(now); midnight.setHours(24,0,0,0);
+      return midnight - now;
+    };
+    const tid = setTimeout(() => {
+      checkMidnight();
+    }, msUntilMidnight());
+    return () => clearTimeout(tid);
+  }, [glasses]);
+
+  const toggle = i => {
+    setGlasses(prev => {
+      const next = [...prev];
+      next[i] = !next[i];
+      saveWater(next);
+      return next;
+    });
+  };
+
+  const drunk  = glasses.filter(g => !g).length;
+  const ozLeft = (WATER_GLASSES - drunk) * 8;
+  const allDone = drunk === WATER_GLASSES;
+
+  return (
+    <div style={{ background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:16, padding:"16px 20px", marginBottom:28 }}>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
+        <div>
+          <div style={{ fontSize:11, letterSpacing:"0.12em", textTransform:"uppercase", color:T.blue, fontFamily:"'Playfair Display', serif", marginBottom:2 }}>Water Today</div>
+          <div style={{ fontSize:12, color:T.textLight }}>
+            {allDone
+              ? "✓ All 80oz done — well done."
+              : `${drunk * 8}oz of 80oz · ${ozLeft}oz to go`}
+          </div>
+        </div>
+        <div style={{ fontSize:10, color:T.textLight, textAlign:"right", lineHeight:1.5 }}>
+          Tap a glass<br/>when you drink it
+        </div>
+      </div>
+      <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
+        {glasses.map((full, i) => (
+          <WaterGlass key={i} index={i} full={full} onClick={() => toggle(i)} />
+        ))}
+      </div>
+      {drunk > 0 && !allDone && (
+        <button onClick={() => { const f=Array(WATER_GLASSES).fill(true); setGlasses(f); saveWater(f); }} style={{ marginTop:10, background:"none", border:"none", fontSize:10, color:T.textLight, cursor:"pointer", padding:0 }}>↺ Reset</button>
+      )}
+    </div>
+  );
+}
+
+// ── SubDropdown ──────────────────────────────────────────────────────
 function SubDropdown({ ing }) {
   const { subs, setSub } = useSubs();
   const { openKey, setOpenKey } = useOpenDropdown();
-  const btnRef = React.useRef(null);
+  const btnRef = useRef(null);
   const isOpen = openKey === ing.subKey;
   const current = subs[ing.subKey] || "default";
   const [menuStyle, setMenuStyle] = useState({});
@@ -95,7 +213,7 @@ function SubDropdown({ ing }) {
       const r = btnRef.current.getBoundingClientRect();
       const below = window.innerHeight - r.bottom;
       const mh = Math.min(280, 44 + ing.substitutions.length * 52);
-      setMenuStyle({ top: Math.max(8, below > mh ? r.bottom+6 : r.top-mh-6), left: Math.min(r.left, window.innerWidth-230) });
+      setMenuStyle({ top:Math.max(8, below > mh ? r.bottom+6 : r.top-mh-6), left:Math.min(r.left, window.innerWidth-230) });
     }
     setOpenKey(isOpen ? null : ing.subKey);
   };
@@ -104,11 +222,11 @@ function SubDropdown({ ing }) {
       <button ref={btnRef} onClick={toggle} style={{ background:"none", border:`1px solid ${T.cardBorder}`, borderRadius:5, color:T.textLight, padding:"1px 7px", cursor:"pointer", fontSize:10, marginLeft:6 }}>swap {isOpen?"▲":"▼"}</button>
       {isOpen && (
         <div style={{ position:"fixed", ...menuStyle, zIndex:1000, background:T.card, border:`1px solid ${T.gold}`, borderRadius:12, padding:6, width:220, boxShadow:"0 8px 32px rgba(80,50,10,0.12)" }}>
-          <div onClick={() => { setSub(ing.subKey, null); setOpenKey(null); }} style={{ padding:"9px 12px", fontSize:12, cursor:"pointer", borderRadius:8, color:current==="default"?T.green:T.textMid, background:current==="default"?T.greenSoft:"none" }}>
+          <div onClick={() => { setSub(ing.subKey,null); setOpenKey(null); }} style={{ padding:"9px 12px", fontSize:12, cursor:"pointer", borderRadius:8, color:current==="default"?T.green:T.textMid, background:current==="default"?T.greenSoft:"none" }}>
             {ing.item} <span style={{ color:T.textLight, fontSize:10 }}>(original)</span>
           </div>
           {ing.substitutions.map(sub => (
-            <div key={sub.id} onClick={() => { setSub(ing.subKey, sub.id); setOpenKey(null); }} style={{ padding:"9px 12px", fontSize:12, cursor:"pointer", borderRadius:8, color:current===sub.id?T.green:T.textMid, background:current===sub.id?T.greenSoft:"none" }}>
+            <div key={sub.id} onClick={() => { setSub(ing.subKey,sub.id); setOpenKey(null); }} style={{ padding:"9px 12px", fontSize:12, cursor:"pointer", borderRadius:8, color:current===sub.id?T.green:T.textMid, background:current===sub.id?T.greenSoft:"none" }}>
               {sub.item}
               {sub.note && <div style={{ fontSize:10, color:T.textLight, marginTop:2 }}>{sub.note}</div>}
             </div>
@@ -124,7 +242,7 @@ function IngredientList({ ingredients }) {
   const resolved = (ingredients||[]).map(ing => {
     if (!ing.subKey || !subs[ing.subKey]) return ing;
     const sub = ing.substitutions && ing.substitutions.find(s => s.id === subs[ing.subKey]);
-    return sub ? { ...ing, item: sub.item } : ing;
+    return sub ? { ...ing, item:sub.item } : ing;
   });
   return (
     <ul style={{ listStyle:"none", margin:0, padding:0, display:"flex", flexDirection:"column", gap:5 }}>
@@ -138,16 +256,16 @@ function IngredientList({ ingredients }) {
   );
 }
 
+// ── Meal Card ────────────────────────────────────────────────────────
 function MealCard({ meal }) {
   const [showIng, setShowIng] = useState(false);
   const [showSteps, setShowSteps] = useState(false);
-  const macros = meal.macros;
   const dayLabel = meal.day || meal.days;
   return (
     <Card style={{ marginBottom:12 }}>
       <div style={{ fontSize:11, color:T.textLight, fontFamily:"monospace", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:4 }}>{dayLabel}</div>
       <div style={{ fontSize:16, fontWeight:500, color:T.text, fontFamily:"'Playfair Display', serif", marginBottom:4 }}>{meal.name}</div>
-      {macros && <MacroRow macros={macros} />}
+      {meal.macros && <MacroRow macros={meal.macros} />}
       {meal.note && <div style={{ fontSize:12, color:T.textLight, lineHeight:1.65, marginBottom:10, fontStyle:"italic" }}>{meal.note}</div>}
       <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
         {meal.ingredients && (
@@ -161,22 +279,13 @@ function MealCard({ meal }) {
           </button>
         )}
       </div>
-      {showIng && meal.ingredients && (
-        <div style={{ marginTop:12, paddingTop:12, borderTop:`1px solid ${T.divider}` }}>
-          <SectionLabel>Ingredients</SectionLabel>
-          <IngredientList ingredients={meal.ingredients} />
-        </div>
-      )}
-      {showSteps && meal.steps && (
-        <div style={{ marginTop:12, paddingTop:12, borderTop:`1px solid ${T.divider}` }}>
-          <SectionLabel>Method</SectionLabel>
-          <Steps items={meal.steps} />
-        </div>
-      )}
+      {showIng && <div style={{ marginTop:12, paddingTop:12, borderTop:`1px solid ${T.divider}` }}><SectionLabel>Ingredients</SectionLabel><IngredientList ingredients={meal.ingredients} /></div>}
+      {showSteps && <div style={{ marginTop:12, paddingTop:12, borderTop:`1px solid ${T.divider}` }}><SectionLabel>Method</SectionLabel><Steps items={meal.steps} /></div>}
     </Card>
   );
 }
 
+// ── Snack Card ───────────────────────────────────────────────────────
 function SnackCard({ snack, bedtime }) {
   const [showWhy, setShowWhy] = useState(false);
   return (
@@ -198,8 +307,9 @@ function SnackCard({ snack, bedtime }) {
   );
 }
 
+// ── Tab views ────────────────────────────────────────────────────────
 function MealsTab({ meals, label, intro }) {
-  if (!meals || meals.length === 0) return <div style={{ color:T.textLight, fontSize:13 }}>No {label.toLowerCase()} data for this week.</div>;
+  if (!meals || !meals.length) return <div style={{ color:T.textLight, fontSize:13 }}>No {label.toLowerCase()} data for this week.</div>;
   return (
     <div>
       {intro && <div style={{ fontSize:12, color:T.textLight, lineHeight:1.65, marginBottom:16, background:T.goldSoft, border:`1px solid ${T.tagBorder}`, borderRadius:10, padding:"10px 14px" }}>{intro}</div>}
@@ -207,9 +317,8 @@ function MealsTab({ meals, label, intro }) {
     </div>
   );
 }
-
 function SnacksTab({ snacks, bedtime }) {
-  if (!snacks || snacks.length === 0) return <div style={{ color:T.textLight, fontSize:13 }}>No snack data for this week.</div>;
+  if (!snacks || !snacks.length) return <div style={{ color:T.textLight, fontSize:13 }}>No snack data for this week.</div>;
   return (
     <div>
       {bedtime && (
@@ -222,39 +331,31 @@ function SnacksTab({ snacks, bedtime }) {
   );
 }
 
+// ── Shopping Tab ─────────────────────────────────────────────────────
 function ShoppingTab({ week }) {
-  const [checked, setChecked] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("padre_shop_" + week.id) || "{}"); } catch { return {}; }
-  });
-  const toggle = key => setChecked(prev => {
-    const next = { ...prev, [key]: !prev[key] };
-    localStorage.setItem("padre_shop_" + week.id, JSON.stringify(next));
-    return next;
-  });
-  const cats = Object.entries(week.shopping || {});
-  const total = cats.reduce((n,[,items]) => n + items.length, 0);
-  const done = Object.values(checked).filter(Boolean).length;
+  const [checked, setChecked] = useState(() => { try { return JSON.parse(localStorage.getItem("padre_shop_"+week.id)||"{}"); } catch { return {}; } });
+  const toggle = key => setChecked(prev => { const next={...prev,[key]:!prev[key]}; localStorage.setItem("padre_shop_"+week.id,JSON.stringify(next)); return next; });
+  const cats = Object.entries(week.shopping||{});
+  const total = cats.reduce((n,[,items])=>n+items.length,0);
+  const done  = Object.values(checked).filter(Boolean).length;
   return (
     <div>
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
         <div style={{ fontSize:13, color:T.textLight }}>{done}/{total} items</div>
-        {done > 0 && (
-          <button onClick={() => { setChecked({}); localStorage.removeItem("padre_shop_"+week.id); }} style={{ background:"none", border:`1px solid ${T.cardBorder}`, borderRadius:8, color:T.textLight, padding:"4px 12px", cursor:"pointer", fontSize:11 }}>Clear all</button>
-        )}
+        {done > 0 && <button onClick={() => { setChecked({}); localStorage.removeItem("padre_shop_"+week.id); }} style={{ background:"none", border:`1px solid ${T.cardBorder}`, borderRadius:8, color:T.textLight, padding:"4px 12px", cursor:"pointer", fontSize:11 }}>Clear all</button>}
       </div>
-      {cats.map(([cat, items]) => (
+      {cats.map(([cat,items]) => (
         <div key={cat} style={{ marginBottom:28 }}>
           <div style={{ fontSize:12, letterSpacing:"0.1em", textTransform:"uppercase", color:T.accent, fontWeight:500, marginBottom:10, fontFamily:"'Playfair Display', serif", paddingBottom:6, borderBottom:`1px solid ${T.divider}` }}>{cat}</div>
           <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
             {items.map((item,i) => {
-              const key = cat+":"+i;
-              const isDone = !!checked[key];
+              const key=cat+":"+i; const isDone=!!checked[key];
               return (
                 <div key={key} onClick={() => toggle(key)} style={{ display:"flex", alignItems:"flex-start", gap:12, padding:"10px 14px", borderRadius:10, cursor:"pointer", background:isDone?T.greenSoft:T.card, border:`1px solid ${isDone?"#c8e0c8":T.cardBorder}`, transition:"all 0.15s" }}>
                   <div style={{ width:18, height:18, borderRadius:"50%", flexShrink:0, marginTop:1, border:`2px solid ${isDone?T.green:T.textLight}`, background:isDone?T.green:"none", display:"flex", alignItems:"center", justifyContent:"center" }}>
                     {isDone && <span style={{ color:"#fff", fontSize:10 }}>✓</span>}
                   </div>
-                  <span style={{ fontSize:13, color:isDone?T.textLight:T.text, textDecoration:isDone?"line-through":"none", lineHeight:1.5 }}>{typeof item === "string" ? item : item.display || item}</span>
+                  <span style={{ fontSize:13, color:isDone?T.textLight:T.text, textDecoration:isDone?"line-through":"none", lineHeight:1.5 }}>{typeof item==="string"?item:item.display||item}</span>
                 </div>
               );
             })}
@@ -265,101 +366,179 @@ function ShoppingTab({ week }) {
   );
 }
 
-function NutritionTab({ week }) {
+// ── Nutrition Tab ────────────────────────────────────────────────────
+function MicroBar({ label, value, dri, unit, color }) {
+  const pct = Math.min(100, Math.round((value / dri) * 100));
+  const over = value > dri;
+  return (
+    <div style={{ marginBottom:14 }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:4 }}>
+        <span style={{ fontSize:12, color:T.textMid, textTransform:"capitalize" }}>{label.replace(/_/g," ")}</span>
+        <span style={{ fontSize:11, fontFamily:"monospace", color: over?"#c05050":T.textLight }}>
+          {value}{unit} <span style={{ color:T.textLight }}>/ {dri}{unit}</span>
+        </span>
+      </div>
+      <div style={{ height:6, background:"#f0e8d8", borderRadius:3, overflow:"hidden" }}>
+        <div style={{ height:"100%", width:`${pct}%`, background: over?"#e07070":color, borderRadius:3, transition:"width 0.4s" }} />
+      </div>
+      {over && <div style={{ fontSize:10, color:"#c05050", marginTop:2 }}>↑ above target — check sodium sources</div>}
+    </div>
+  );
+}
+
+function NutritionTab({ week, nutritionDB }) {
   const targets = week.targets && week.targets.padre;
   if (!targets) return null;
-  const goal = targets.goal;
-  const cols = ["", "Cal", "Protein", "Carbs", "Fat", "Fiber"];
+  const goal = targets.goal; // [cal, protein, carbs, fat, fiber]
+
+  // Aggregate micros from all meals in the week using nutritionDB
+  const dri = nutritionDB._dri && nutritionDB._dri.padre;
+  const microKeys = dri ? Object.keys(dri) : [];
+
+  // Estimate weekly average micros by summing ingredient micros
+  const weekMicros = {};
+  microKeys.forEach(k => weekMicros[k] = 0);
+  const allMeals = [
+    ...(week.breakfasts||[]), ...(week.lunches||[]),
+    ...(week.dinners||[]), ...(week.daytimeSnacks||[]), ...(week.bedtimeSnacks||[])
+  ];
+  allMeals.forEach(meal => {
+    (meal.ingredients||[]).forEach(ing => {
+      const db = nutritionDB[ing.nutritionKey];
+      if (!db || !db.micros) return;
+      microKeys.forEach(k => {
+        if (db.micros[k] != null) weekMicros[k] += db.micros[k];
+      });
+    });
+  });
+  // Average over 7 days
+  const dailyMicros = {};
+  microKeys.forEach(k => dailyMicros[k] = Math.round(weekMicros[k] / 7));
+
+  const macroRows = [["cal","kcal"],["protein","g"],["carbs","g"],["fat","g"],["fiber","g"]];
+
   return (
     <div>
+      {/* Macro targets */}
       <Card style={{ marginBottom:16 }}>
-        <SectionLabel>Daily Targets</SectionLabel>
+        <SectionLabel>Daily Macro Targets</SectionLabel>
         <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:18 }}>
-          {[["cal","Cal","kcal"],["protein","Protein","g"],["carbs","Carbs","g"],["fat","Fat","g"],["fiber","Fiber","g"]].map(([key,label,unit],i) => (
-            <div key={key} style={{ flex:"1 1 80px", minWidth:70, background:T.tag, border:`1px solid ${T.tagBorder}`, borderRadius:12, padding:"12px 14px", textAlign:"center" }}>
-              <div style={{ fontSize:20, fontWeight:500, color:CLR[key], fontFamily:"'Playfair Display', serif" }}>{goal[i]}</div>
+          {[["cal","Cal","kcal","#c8814a"],["protein","Protein","g","#6b9e6b"],["carbs","Carbs","g","#c8a96a"],["fat","Fat","g","#7a9ec0"]].map(([key,label,unit,clr],i) => (
+            <div key={key} style={{ flex:"1 1 70px", minWidth:65, background:T.tag, border:`1px solid ${T.tagBorder}`, borderRadius:12, padding:"12px 14px", textAlign:"center" }}>
+              <div style={{ fontSize:20, fontWeight:500, color:clr, fontFamily:"'Playfair Display', serif" }}>{goal[i]}</div>
               <div style={{ fontSize:10, color:T.textLight, textTransform:"uppercase", letterSpacing:"0.08em", marginTop:2 }}>{label}{unit!=="kcal"?" (g)":""}</div>
             </div>
           ))}
         </div>
         <div style={{ fontSize:12, color:T.textLight, lineHeight:1.65, borderTop:`1px solid ${T.divider}`, paddingTop:12 }}>
-          <strong style={{ color:T.textMid }}>T2D approach:</strong> Carbs are intentionally low (~115g/day) and exclusively from low-GI sources — lentils (GI ~32), chickpeas, vegetables, small amounts of quinoa and whole grain bread. No refined grains, no added sugar. The bedtime snack is built in every night to anchor overnight blood sugar.
+          <strong style={{ color:T.textMid }}>T2D approach:</strong> Carbs are intentionally low (~115g/day) from low-GI sources only — lentils (GI ~32), chickpeas, vegetables, small amounts of quinoa and whole grain bread. No refined grains, no added sugar. The bedtime snack anchors overnight blood sugar every night.
         </div>
       </Card>
-      <Card>
-        <SectionLabel>Daily Breakdown</SectionLabel>
+
+      {/* Macro breakdown table */}
+      <Card style={{ marginBottom:16 }}>
+        <SectionLabel>Daily Breakdown by Meal</SectionLabel>
         <div style={{ overflowX:"auto" }}>
           <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
             <thead>
-              <tr>{cols.map(c => <th key={c} style={{ textAlign:c===""?"left":"right", padding:"6px 10px", color:T.textLight, fontWeight:400, fontFamily:"monospace", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", borderBottom:`1px solid ${T.divider}` }}>{c}</th>)}</tr>
+              <tr>
+                <th style={{ textAlign:"left", padding:"6px 10px", color:T.textLight, fontWeight:400, fontFamily:"monospace", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", borderBottom:`1px solid ${T.divider}` }}>Meal</th>
+                {macroRows.map(([k]) => <th key={k} style={{ textAlign:"right", padding:"6px 8px", color:CLR[k]||T.textLight, fontWeight:400, fontFamily:"monospace", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em", borderBottom:`1px solid ${T.divider}` }}>{k}</th>)}
+              </tr>
             </thead>
             <tbody>
               {targets.rows.map(([label,...vals],i) => (
                 <tr key={i} style={{ borderBottom:`1px solid ${T.divider}` }}>
-                  <td style={{ padding:"10px 10px", color:T.text, fontSize:13 }}>{label}</td>
-                  {vals.map((v,j) => <td key={j} style={{ padding:"10px 10px", textAlign:"right", color:j===0?CLR.cal:j===1?CLR.protein:j===2?CLR.carbs:j===3?CLR.fat:CLR.fiber, fontFamily:"monospace", fontWeight:500 }}>{v}{j>0?"g":""}</td>)}
+                  <td style={{ padding:"9px 10px", color:T.text, fontSize:13 }}>{label}</td>
+                  {vals.map((v,j) => <td key={j} style={{ padding:"9px 8px", textAlign:"right", color:CLR[macroRows[j][0]]||T.textLight, fontFamily:"monospace", fontWeight:500, fontSize:12 }}>{v}{j>0?"g":""}</td>)}
                 </tr>
               ))}
               <tr style={{ background:T.goldSoft }}>
-                <td style={{ padding:"10px 10px", color:T.textMid, fontFamily:"monospace", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>Goal</td>
-                {goal.map((v,i) => <td key={i} style={{ padding:"10px 10px", textAlign:"right", color:T.textMid, fontFamily:"monospace", fontWeight:500 }}>{v}{i>0?"g":""}</td>)}
+                <td style={{ padding:"9px 10px", color:T.textMid, fontFamily:"monospace", fontSize:10, textTransform:"uppercase", letterSpacing:"0.08em" }}>Goal</td>
+                {goal.map((v,i) => <td key={i} style={{ padding:"9px 8px", textAlign:"right", color:T.textMid, fontFamily:"monospace", fontWeight:500, fontSize:12 }}>{v}{i>0?"g":""}</td>)}
               </tr>
             </tbody>
           </table>
+        </div>
+      </Card>
+
+      {/* Micronutrients */}
+      <Card>
+        <SectionLabel>Micronutrients — Est. Daily Average</SectionLabel>
+        <div style={{ fontSize:11, color:T.textLight, lineHeight:1.6, marginBottom:18, background:"#f8f4ee", borderRadius:8, padding:"10px 12px" }}>
+          Estimated from ingredient data in nutrition.json — averages across all 7 days. Bars show % of daily reference intake for a 67-year-old male.
+        </div>
+        {microKeys.length === 0 || Object.values(dailyMicros).every(v => v === 0) ? (
+          <div style={{ fontSize:12, color:T.textLight }}>Add <code>nutritionKey</code> fields to ingredients and micro data to nutrition.json to see micronutrient estimates here.</div>
+        ) : (
+          <div style={{ columns:"1 auto" }}>
+            {/* Fiber first */}
+            {dri && dri.fiber && (
+              <MicroBar
+                key="fiber"
+                label="Fiber"
+                value={goal[4]}
+                dri={dri.fiber.dri}
+                unit={dri.fiber.unit === "g" ? "g" : "mg"}
+                color={CLR.fiber}
+              />
+            )}
+            {microKeys.filter(k => k !== "fiber").map(k => {
+              if (!dri[k]) return null;
+              const val = dailyMicros[k] || 0;
+              const driVal = dri[k].dri;
+              const unit = dri[k].unit === "g" ? "g" : dri[k].unit === "mcg" ? "mcg" : "mg";
+              return <MicroBar key={k} label={k} value={val} dri={driVal} unit={unit} color={MICRO_CLR[k]||"#a0a080"} />;
+            })}
+          </div>
+        )}
+        <div style={{ fontSize:11, color:T.textLight, marginTop:16, lineHeight:1.5, borderTop:`1px solid ${T.divider}`, paddingTop:12 }}>
+          <strong style={{ color:T.textMid }}>Key watchpoints for T2D:</strong> Sodium (kidney load), Magnesium (insulin sensitivity), Vitamin D (blood sugar regulation), Potassium (blood pressure). This plan is structured to keep sodium moderate and all others well-supplied.
         </div>
       </Card>
     </div>
   );
 }
 
-function WeekView({ week }) {
+// ── Week View ────────────────────────────────────────────────────────
+function WeekView({ week, nutritionDB }) {
   const [tab, setTab] = useState(0);
   const TABS = [
-    { label: "Breakfast", emoji: "🌅", key: "breakfasts", bedtime: false },
-    { label: "Lunch",     emoji: "🫙", key: "lunches",    bedtime: false },
-    { label: "Dinner",    emoji: "🍽️", key: "dinners",    bedtime: false },
-    { label: "Snacks",    emoji: "🫒", key: "daytimeSnacks", bedtime: false },
-    { label: "Bedtime",   emoji: "🌙", key: "bedtimeSnacks", bedtime: true },
+    { label:"Breakfast", emoji:"🌅", key:"breakfasts" },
+    { label:"Lunch",     emoji:"🫙", key:"lunches"    },
+    { label:"Dinner",    emoji:"🍽️", key:"dinners"   },
+    { label:"Snacks",    emoji:"🫒", key:"daytimeSnacks" },
+    { label:"Bedtime",   emoji:"🌙", key:"bedtimeSnacks", bedtime:true },
   ];
   const current = TABS[tab];
-  const isSnackTab = tab === 3 || tab === 4;
-
   return (
     <div>
-      {/* Tab bar */}
       <div style={{ display:"flex", gap:3, background:"#f0ebe0", border:`1px solid ${T.cardBorder}`, borderRadius:14, padding:4, marginBottom:24, overflowX:"auto" }}>
         {TABS.map((t,i) => (
-          <button key={t.label} onClick={() => setTab(i)} style={{ flex:"1 0 auto", padding:"9px 12px", background:tab===i?(t.bedtime?"#ede8f5":T.card):"none", border:`1px solid ${tab===i?(t.bedtime?T.purpleBorder:T.cardBorder):"transparent"}`, borderRadius:10, cursor:"pointer", color:tab===i?(t.bedtime?T.purple:T.text):T.textLight, fontSize:12, fontWeight:tab===i?500:400, whiteSpace:"nowrap", transition:"all 0.15s" }}>
+          <button key={t.label} onClick={() => setTab(i)} style={{ flex:"1 0 auto", padding:"9px 10px", background:tab===i?(t.bedtime?"#ede8f5":T.card):"none", border:`1px solid ${tab===i?(t.bedtime?T.purpleBorder:T.cardBorder):"transparent"}`, borderRadius:10, cursor:"pointer", color:tab===i?(t.bedtime?T.purple:T.text):T.textLight, fontSize:12, fontWeight:tab===i?500:400, whiteSpace:"nowrap", transition:"all 0.15s" }}>
             {t.emoji} {t.label}
           </button>
         ))}
       </div>
-
-      {/* Tab content */}
-      {!isSnackTab && (
-        <MealsTab
-          meals={week[current.key]}
-          label={current.label}
-          intro={current.key === "lunches" ? "💡 Batch cook tip: Make a big pot of lentil soup on Sunday — it covers Tuesday and the rest of the week's lunches with almost no effort each day." : null}
-        />
-      )}
+      {tab <= 2 && <MealsTab meals={week[current.key]} label={current.label} intro={tab===1?"💡 Batch cook tip: Make a big pot of lentil soup on Sunday — it covers Tuesday and the rest of the week's lunches with almost no effort each day.":null} />}
       {tab === 3 && <SnacksTab snacks={week.daytimeSnacks} bedtime={false} />}
       {tab === 4 && <SnacksTab snacks={week.bedtimeSnacks} bedtime={true} />}
     </div>
   );
 }
 
-function HistoryTab({ allWeeks }) {
+// ── History Tab ──────────────────────────────────────────────────────
+function HistoryTab({ allWeeks, nutritionDB }) {
   const [viewing, setViewing] = useState(null);
   const past = allWeeks.filter(w => w.id !== CURRENT_WEEK_ID).reverse();
   if (viewing) return (
     <div>
       <button onClick={() => setViewing(null)} style={{ display:"flex", alignItems:"center", gap:8, background:"none", border:`1px solid ${T.cardBorder}`, borderRadius:8, color:T.textMid, padding:"7px 14px", cursor:"pointer", fontSize:12, marginBottom:24 }}>← Back</button>
       <div style={{ fontSize:13, color:T.accent, fontFamily:"'Playfair Display', serif", marginBottom:20 }}>{viewing.label}</div>
-      <WeekView week={viewing} />
+      <WeekView week={viewing} nutritionDB={nutritionDB} />
     </div>
   );
-  if (past.length === 0) return (
+  if (!past.length) return (
     <div style={{ textAlign:"center", padding:"60px 0", color:T.textLight }}>
       <div style={{ fontSize:32, marginBottom:12 }}>🫙</div>
       <div style={{ fontSize:14 }}>No past weeks yet.</div>
@@ -382,16 +561,19 @@ function HistoryTab({ allWeeks }) {
   );
 }
 
+// ── App ──────────────────────────────────────────────────────────────
 function App() {
-  const [mainTab, setMainTab] = useState(0);
+  const [mainTab, setMainTab]   = useState(0);
   const [allWeeks, setAllWeeks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState(null);
+  const [nutritionDB, setNutritionDB] = useState({});
   const [subs, setSubs] = useState(() => { try { return JSON.parse(localStorage.getItem("padre_subs")||"{}"); } catch { return {}; } });
   const setSub = useCallback((key,val) => setSubs(prev => { const next={...prev}; if(val==null) delete next[key]; else next[key]=val; localStorage.setItem("padre_subs",JSON.stringify(next)); return next; }), []);
   const [openKey, setOpenKey] = useState(null);
 
   useEffect(() => {
+    fetch("nutrition.json").then(r=>r.json()).then(setNutritionDB).catch(()=>{});
     async function load() {
       try {
         const results = await Promise.all(WEEK_REGISTRY.map(async ({id,label}) => {
@@ -407,16 +589,10 @@ function App() {
   }, []);
 
   const currentWeek = allWeeks.find(w => w.id === CURRENT_WEEK_ID);
-
-  const MAIN_TABS = [
-    { label:"This Week" },
-    { label:"Shopping" },
-    { label:"Nutrition" },
-    { label:"Past Weeks" },
-  ];
+  const MAIN_TABS = ["This Week","Shopping","Nutrition","Past Weeks"];
 
   if (loading) return <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", color:T.textLight, fontSize:13 }}>Loading Padre's Pantry…</div>;
-  if (error) return <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center" }}><div style={{ textAlign:"center", color:T.accent, fontSize:13 }}><div style={{ marginBottom:8, fontFamily:"'Playfair Display', serif", fontSize:18 }}>Something's off</div><div style={{ color:T.textLight, fontSize:11 }}>{error}</div></div></div>;
+  if (error)   return <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center" }}><div style={{ textAlign:"center" }}><div style={{ color:T.accent, fontFamily:"'Playfair Display', serif", fontSize:18, marginBottom:8 }}>Something's off</div><div style={{ color:T.textLight, fontSize:11 }}>{error}</div></div></div>;
 
   return (
     <OpenDropdownCtx.Provider value={{ openKey, setOpenKey }}>
@@ -425,37 +601,32 @@ function App() {
         <div style={{ maxWidth:860, margin:"0 auto" }}>
 
           {/* Header */}
-          <div style={{ marginBottom:32, borderBottom:`1px solid ${T.divider}`, paddingBottom:28 }}>
+          <div style={{ marginBottom:24, borderBottom:`1px solid ${T.divider}`, paddingBottom:24 }}>
             <div style={{ fontSize:10, letterSpacing:"0.2em", textTransform:"uppercase", color:T.textLight, marginBottom:8, fontFamily:"'Playfair Display', serif" }}>Mediterranean · Meal Plan</div>
-            <h1 style={{ fontFamily:"'Playfair Display', serif", fontSize:"clamp(2rem,6vw,3.2rem)", fontWeight:400, lineHeight:1.1, color:T.text, marginBottom:18 }}>
+            <h1 style={{ fontFamily:"'Playfair Display', serif", fontSize:"clamp(2rem,6vw,3.2rem)", fontWeight:400, lineHeight:1.1, color:T.text, marginBottom:0 }}>
               Padre's <span style={{ color:T.accent, fontStyle:"italic" }}>Pantry.</span>
             </h1>
-            <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
-              {[["Calories / day","~1,900 kcal"],["Protein","~135g"],["Diet","Mediterranean"],["Carbs","Low-GI only"]].map(([l,v]) => (
-                <div key={l} style={{ background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:10, padding:"8px 14px" }}>
-                  <div style={{ fontSize:10, color:T.textLight, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
-                  <div style={{ fontSize:13, fontWeight:500, color:T.text, marginTop:2 }}>{v}</div>
-                </div>
-              ))}
-            </div>
           </div>
+
+          {/* Water Tracker */}
+          <WaterTracker />
 
           {/* Main nav */}
           <div style={{ display:"flex", gap:3, background:"#f0ebe0", border:`1px solid ${T.cardBorder}`, borderRadius:14, padding:4, marginBottom:28, maxWidth:480 }}>
             {MAIN_TABS.map((t,i) => (
-              <button key={t.label} onClick={() => setMainTab(i)} style={{ flex:1, padding:"9px 12px", background:mainTab===i?T.card:"none", border:`1px solid ${mainTab===i?T.cardBorder:"transparent"}`, borderRadius:10, cursor:"pointer", color:mainTab===i?T.text:T.textLight, fontSize:12, fontWeight:mainTab===i?500:400, transition:"all 0.15s" }}>{t.label}</button>
+              <button key={t} onClick={() => setMainTab(i)} style={{ flex:1, padding:"9px 12px", background:mainTab===i?T.card:"none", border:`1px solid ${mainTab===i?T.cardBorder:"transparent"}`, borderRadius:10, cursor:"pointer", color:mainTab===i?T.text:T.textLight, fontSize:12, fontWeight:mainTab===i?500:400, transition:"all 0.15s" }}>{t}</button>
             ))}
           </div>
 
-          {mainTab === 0 && currentWeek && (
+          {mainTab===0 && currentWeek && (
             <div>
               <div style={{ fontSize:13, color:T.accent, fontFamily:"'Playfair Display', serif", marginBottom:20 }}>{currentWeek.label}</div>
-              <WeekView week={currentWeek} />
+              <WeekView week={currentWeek} nutritionDB={nutritionDB} />
             </div>
           )}
-          {mainTab === 1 && currentWeek && <ShoppingTab week={currentWeek} />}
-          {mainTab === 2 && currentWeek && <NutritionTab week={currentWeek} />}
-          {mainTab === 3 && <HistoryTab allWeeks={allWeeks} />}
+          {mainTab===1 && currentWeek && <ShoppingTab week={currentWeek} />}
+          {mainTab===2 && currentWeek && <NutritionTab week={currentWeek} nutritionDB={nutritionDB} />}
+          {mainTab===3 && <HistoryTab allWeeks={allWeeks} nutritionDB={nutritionDB} />}
 
         </div>
       </div>
