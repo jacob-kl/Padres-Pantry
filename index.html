@@ -24,9 +24,9 @@
 <body>
 <div id="root"></div>
 <script type="text/babel">
-
+ 
 const { useState, useEffect, useContext, createContext, useCallback, useRef } = React;
-
+ 
 const WEEK_REGISTRY = [
   { id: "2026-W23", label: "Week of June 1, 2026" },
 ];
@@ -34,19 +34,19 @@ const CURRENT_WEEK_ID = WEEK_REGISTRY[WEEK_REGISTRY.length - 1].id;
 const WATER_GLASSES   = 12; // T2D guideline: 96oz/day
 const WATER_STORE_KEY  = "padre_water";
 const RATINGS_STORE_KEY = "padre_ratings";
-
+ 
 const SubsCtx        = createContext({ subs: {}, setSub: () => {} });
 const useSubs        = () => useContext(SubsCtx);
 const OpenDropdownCtx = createContext({ openKey: null, setOpenKey: () => {} });
 const useOpenDropdown = () => useContext(OpenDropdownCtx);
-
+ 
 const CLR = { cal:"#c8814a", protein:"#6b9e6b", carbs:"#c8a96a", fat:"#7a9ec0", fiber:"#9e7ab5" };
 const MICRO_CLR = {
   sodium:"#e07040", potassium:"#6b9e6b", calcium:"#c8a96a", vitamin_d:"#e8c040",
   magnesium:"#7ab0c0", zinc:"#a07ab0", vitamin_c:"#e8804a", vitamin_b12:"#6ab08a",
   iron:"#c05050", vitamin_a:"#e0a030", folate:"#70a870", phosphorus:"#8090c0", selenium:"#b08060"
 };
-
+ 
 const T = {
   bg:"#faf7f2", card:"#ffffff", cardBorder:"#e8dfc8",
   accent:"#c8814a", accentSoft:"#f5ede0",
@@ -57,7 +57,7 @@ const T = {
   text:"#2d2416", textMid:"#7a6848", textLight:"#b09070",
   divider:"#e8dfc8", tag:"#f5efe4", tagBorder:"#d9c99a",
 };
-
+ 
 // ── Midnight-reset water store ──────────────────────────────────────
 function getTodayKey() {
   const d = new Date();
@@ -73,7 +73,7 @@ function loadWater() {
 function saveWater(glasses) {
   localStorage.setItem(WATER_STORE_KEY, JSON.stringify({ date: getTodayKey(), glasses }));
 }
-
+ 
 // ── Helpers ──────────────────────────────────────────────────────────
 function MacroPill({ label, value, unit, colorKey }) {
   return (
@@ -106,25 +106,59 @@ function Steps({ items }) {
     </ol>
   );
 }
-
-
+ 
+ 
 // ── Meal Rating ──────────────────────────────────────────────────────
 function loadRatings() {
   try { return JSON.parse(localStorage.getItem(RATINGS_STORE_KEY) || "{}"); } catch { return {}; }
 }
 function saveRatings(r) { localStorage.setItem(RATINGS_STORE_KEY, JSON.stringify(r)); }
-
+ 
+// Every score gets its own distinct label — no repeats
+const RATING_LABELS = {
+  0:  "Hard pass",
+  1:  "Not my thing",
+  2:  "Wouldn't make again",
+  3:  "Missing something",
+  4:  "It'll do",
+  5:  "Solid middle ground",
+  6:  "Genuinely enjoyed it",
+  7:  "Would request this again",
+  8:  "Really hit the spot",
+  9:  "Borderline perfect",
+  10: "Make this every week!"
+};
+ 
+const SUBMIT_BUTTONS = [
+  "🥄 Stir it in",
+  "🫒 That's a keeper",
+  "🍋 Squeeze it in",
+  "🧑‍🍳 Chef's kiss — save it",
+  "🐟 Reel it in",
+  "🥗 Toss & save",
+  "🫙 Jar that rating",
+  "🌿 Fresh take — saved",
+  "🍳 Plate it",
+  "🧄 Lock it in",
+  "🥩 Well done — saved",
+];
+ 
 function MealRating({ mealKey }) {
   const [ratings, setRatings] = React.useState(loadRatings);
+  const [pending, setPending] = React.useState(null);   // draft value, not yet saved
   const [dragging, setDragging] = React.useState(false);
   const [showSaved, setShowSaved] = React.useState(false);
+  const [btnLabel] = React.useState(() => SUBMIT_BUTTONS[Math.floor(Math.random() * SUBMIT_BUTTONS.length)]);
   const trackRef = React.useRef(null);
   const saveTimer = React.useRef(null);
-  const current = ratings[mealKey];
-  const hasRating = current != null;
-
+ 
+  const saved = ratings[mealKey];           // committed value
+  const draft = pending != null ? pending : saved;  // what the slider shows
+  const hasDraft = pending != null;
+  const hasSaved = saved != null;
+ 
   const posFromValue = v => `${(v / 10) * 100}%`;
-
+ 
   const valueFromEvent = (e) => {
     if (!trackRef.current) return 0;
     const rect = trackRef.current.getBoundingClientRect();
@@ -132,90 +166,154 @@ function MealRating({ mealKey }) {
     const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     return Math.round(pct * 10);
   };
-
-  const commit = (val) => {
-    const next = { ...loadRatings(), [mealKey]: val };
+ 
+  const handleDragStart = (e) => {
+    setDragging(true);
+    setPending(valueFromEvent(e));
+  };
+  const handleDragMove = (e) => {
+    if (!dragging) return;
+    e.preventDefault();
+    setPending(valueFromEvent(e));
+  };
+  const handleDragEnd = () => setDragging(false);
+ 
+  const handleTouchStart = (e) => {
+    // Only start if the touch isn't a scroll — we check on move
+    setDragging(true);
+    setPending(valueFromEvent(e));
+  };
+ 
+  const commit = () => {
+    if (pending == null) return;
+    const next = { ...loadRatings(), [mealKey]: pending };
     saveRatings(next);
     setRatings(next);
+    setPending(null);
     clearTimeout(saveTimer.current);
     setShowSaved(true);
-    saveTimer.current = setTimeout(() => setShowSaved(false), 1800);
+    saveTimer.current = setTimeout(() => setShowSaved(false), 2200);
   };
-
+ 
   const ratingColor = (v) => {
     if (v == null) return T.textLight;
     if (v <= 3) return "#c05050";
     if (v <= 6) return T.gold;
     return T.green;
   };
-
-  const ratingLabel = (v) => {
-    if (v == null) return "";
-    if (v === 0) return "Not for me";
-    if (v <= 2) return "Didn't enjoy it";
-    if (v <= 4) return "It was okay";
-    if (v <= 6) return "Pretty good";
-    if (v <= 8) return "Really liked it";
-    if (v === 9) return "Excellent";
-    return "Perfect — make again!";
-  };
-
+ 
+  const displayValue = draft != null ? draft : null;
+  const displayColor = ratingColor(displayValue);
+  const isChanged = hasDraft && pending !== saved;
+ 
   return (
     <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${T.divider}` }}>
+      {/* Header row */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
         <span style={{ fontSize: 11, color: T.textLight, fontFamily: "'Playfair Display', serif", letterSpacing: "0.1em", textTransform: "uppercase" }}>
           Rate this meal
         </span>
-        {hasRating && (
-          <span style={{ fontSize: 11, color: ratingColor(current), fontWeight: 500, transition: "color 0.2s" }}>
-            {showSaved ? "✓ saved" : `${current}/10 — ${ratingLabel(current)}`}
-          </span>
-        )}
-        {!hasRating && (
-          <span style={{ fontSize: 11, color: T.textLight, fontStyle: "italic" }}>slide to rate</span>
-        )}
+        <span style={{ fontSize: 11, fontWeight: 500, color: showSaved ? T.green : displayColor, transition: "color 0.2s", fontStyle: displayValue == null ? "italic" : "normal" }}>
+          {showSaved
+            ? "✓ saved!"
+            : displayValue != null
+              ? `${displayValue}/10 — ${RATING_LABELS[displayValue]}`
+              : "drag to set a score"}
+        </span>
       </div>
-      <div style={{ position: "relative", height: 32, cursor: "pointer", userSelect: "none" }}
+ 
+      {/* Slider track */}
+      <div
+        style={{ position: "relative", height: 36, cursor: "ew-resize", userSelect: "none", touchAction: "none" }}
         ref={trackRef}
-        onMouseDown={e => { setDragging(true); commit(valueFromEvent(e)); }}
-        onMouseMove={e => { if (dragging) commit(valueFromEvent(e)); }}
-        onMouseUp={() => setDragging(false)}
-        onMouseLeave={() => setDragging(false)}
-        onTouchStart={e => { setDragging(true); commit(valueFromEvent(e)); }}
-        onTouchMove={e => { e.preventDefault(); commit(valueFromEvent(e)); }}
-        onTouchEnd={() => setDragging(false)}
+        onMouseDown={handleDragStart}
+        onMouseMove={e => { if (dragging) { e.preventDefault(); setPending(valueFromEvent(e)); } }}
+        onMouseUp={handleDragEnd}
+        onMouseLeave={handleDragEnd}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleDragMove}
+        onTouchEnd={handleDragEnd}
       >
-        {/* Track */}
+        {/* Track background */}
         <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: 6, transform: "translateY(-50%)", background: "#f0e8d8", borderRadius: 3 }}>
-          {/* Fill */}
-          {hasRating && (
-            <div style={{ height: "100%", width: posFromValue(current), background: `linear-gradient(to right, #c05050, ${T.gold}, ${T.green})`, borderRadius: 3, transition: dragging ? "none" : "width 0.15s" }} />
+          {displayValue != null && (
+            <div style={{
+              height: "100%", width: posFromValue(displayValue),
+              background: `linear-gradient(to right, #c05050, ${T.gold}, ${T.green})`,
+              borderRadius: 3,
+              opacity: isChanged ? 0.6 : 1,
+              transition: dragging ? "none" : "width 0.1s"
+            }} />
           )}
         </div>
-        {/* Tick marks 0–10 */}
+        {/* Tick marks */}
         {Array.from({length: 11}, (_,i) => (
-          <div key={i} style={{ position: "absolute", top: "50%", left: `${(i/10)*100}%`, transform: "translate(-50%, -50%)", width: i === 0 || i === 10 ? 3 : 2, height: i === 0 || i === 10 ? 12 : 8, background: T.divider, borderRadius: 1 }} />
+          <div key={i} style={{ position: "absolute", top: "50%", left: `${(i/10)*100}%`, transform: "translate(-50%, -50%)", width: i===0||i===10 ? 3 : 2, height: i===0||i===10 ? 12 : 7, background: T.divider, borderRadius: 1 }} />
         ))}
         {/* Thumb */}
-        {hasRating && (
-          <div style={{ position: "absolute", top: "50%", left: posFromValue(current), transform: "translate(-50%, -50%)", width: 20, height: 20, borderRadius: "50%", background: ratingColor(current), border: "2px solid white", boxShadow: "0 2px 6px rgba(0,0,0,0.15)", transition: dragging ? "none" : "left 0.15s, background 0.2s", zIndex: 2 }}>
-            <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", fontSize: 9, fontWeight: 700, color: "white", fontFamily: "monospace" }}>{current}</span>
+        {displayValue != null ? (
+          <div style={{
+            position: "absolute", top: "50%", left: posFromValue(displayValue),
+            transform: "translate(-50%, -50%)",
+            width: 22, height: 22, borderRadius: "50%",
+            background: isChanged ? "#e8c87a" : displayColor,
+            border: `2px solid white`,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+            transition: dragging ? "none" : "left 0.1s, background 0.2s",
+            zIndex: 2, display: "flex", alignItems: "center", justifyContent: "center"
+          }}>
+            <span style={{ fontSize: 9, fontWeight: 700, color: "white", fontFamily: "monospace" }}>{displayValue}</span>
           </div>
-        )}
-        {/* Ghost thumb at 0 when unrated */}
-        {!hasRating && (
-          <div style={{ position: "absolute", top: "50%", left: 0, transform: "translate(-50%, -50%)", width: 20, height: 20, borderRadius: "50%", background: T.divider, border: `2px dashed ${T.textLight}`, zIndex: 2 }} />
+        ) : (
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 22, height: 22, borderRadius: "50%", background: T.divider, border: `2px dashed ${T.textLight}`, zIndex: 2 }} />
         )}
       </div>
-      {/* 0 and 10 labels */}
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+ 
+      {/* 0 / 10 axis labels */}
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2, marginBottom: 10 }}>
         <span style={{ fontSize: 9, color: T.textLight, fontFamily: "monospace" }}>0</span>
         <span style={{ fontSize: 9, color: T.textLight, fontFamily: "monospace" }}>10</span>
       </div>
+ 
+      {/* Submit row — only visible when there's an unsaved draft */}
+      <div style={{
+        overflow: "hidden",
+        maxHeight: isChanged ? 48 : 0,
+        opacity: isChanged ? 1 : 0,
+        transition: "max-height 0.25s ease, opacity 0.2s ease"
+      }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 10 }}>
+          <button onClick={() => setPending(saved ?? null)} style={{ background: "none", border: "none", fontSize: 11, color: T.textLight, cursor: "pointer", padding: "4px 8px" }}>
+            Cancel
+          </button>
+          <button
+            onClick={commit}
+            style={{
+              background: T.accentSoft, border: `1px solid ${T.accent}`,
+              borderRadius: 20, padding: "7px 16px",
+              fontSize: 12, fontWeight: 500, color: T.accent,
+              cursor: "pointer", transition: "background 0.15s"
+            }}
+            onMouseEnter={e => e.target.style.background = "#eed8c0"}
+            onMouseLeave={e => e.target.style.background = T.accentSoft}
+          >
+            {btnLabel}
+          </button>
+        </div>
+      </div>
+ 
+      {/* Saved rating display (when committed, no pending change) */}
+      {hasSaved && !isChanged && !showSaved && (
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <button onClick={() => setPending(saved)} style={{ background: "none", border: "none", fontSize: 10, color: T.textLight, cursor: "pointer", padding: 0, textDecoration: "underline" }}>
+            edit rating
+          </button>
+        </div>
+      )}
     </div>
   );
 }
-
+ 
 // ── Water Glass SVG ──────────────────────────────────────────────────
 function WaterGlass({ full, onClick, index }) {
   // full  = not yet drunk  → blue water inside, blue outline
@@ -255,11 +353,11 @@ function WaterGlass({ full, onClick, index }) {
     </button>
   );
 }
-
+ 
 // ── Water Tracker ────────────────────────────────────────────────────
 function WaterTracker() {
   const [glasses, setGlasses] = useState(loadWater);
-
+ 
   // midnight reset
   useEffect(() => {
     function checkMidnight() {
@@ -280,7 +378,7 @@ function WaterTracker() {
     }, msUntilMidnight());
     return () => clearTimeout(tid);
   }, [glasses]);
-
+ 
   const toggle = i => {
     setGlasses(prev => {
       const next = [...prev];
@@ -289,11 +387,11 @@ function WaterTracker() {
       return next;
     });
   };
-
+ 
   const drunk  = glasses.filter(g => !g).length;
   const ozLeft = (WATER_GLASSES - drunk) * 8;
   const allDone = drunk === WATER_GLASSES;
-
+ 
   return (
     <div style={{ background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:16, padding:"16px 20px", marginBottom:28 }}>
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
@@ -320,7 +418,7 @@ function WaterTracker() {
     </div>
   );
 }
-
+ 
 // ── SubDropdown ──────────────────────────────────────────────────────
 function SubDropdown({ ing }) {
   const { subs, setSub } = useSubs();
@@ -357,7 +455,7 @@ function SubDropdown({ ing }) {
     </div>
   );
 }
-
+ 
 function IngredientList({ ingredients }) {
   const { subs } = useSubs();
   const resolved = (ingredients||[]).map(ing => {
@@ -376,7 +474,7 @@ function IngredientList({ ingredients }) {
     </ul>
   );
 }
-
+ 
 // ── Meal Card ────────────────────────────────────────────────────────
 function MealCard({ meal }) {
   const [showIng, setShowIng] = useState(false);
@@ -406,7 +504,7 @@ function MealCard({ meal }) {
     </Card>
   );
 }
-
+ 
 // ── Snack Card ───────────────────────────────────────────────────────
 function SnackCard({ snack, bedtime }) {
   const [showWhy, setShowWhy] = useState(false);
@@ -428,7 +526,7 @@ function SnackCard({ snack, bedtime }) {
     </div>
   );
 }
-
+ 
 // ── Tab views ────────────────────────────────────────────────────────
 function MealsTab({ meals, label, intro }) {
   if (!meals || !meals.length) return <div style={{ color:T.textLight, fontSize:13 }}>No {label.toLowerCase()} data for this week.</div>;
@@ -452,7 +550,7 @@ function SnacksTab({ snacks, bedtime }) {
     </div>
   );
 }
-
+ 
 // ── Shopping Tab ─────────────────────────────────────────────────────
 function ShoppingTab({ week }) {
   const [checked, setChecked] = useState(() => { try { return JSON.parse(localStorage.getItem("padre_shop_"+week.id)||"{}"); } catch { return {}; } });
@@ -487,7 +585,7 @@ function ShoppingTab({ week }) {
     </div>
   );
 }
-
+ 
 // ── Nutrition Tab ────────────────────────────────────────────────────
 function MicroBar({ label, value, dri, unit, color }) {
   const pct = Math.min(100, Math.round((value / dri) * 100));
@@ -507,16 +605,16 @@ function MicroBar({ label, value, dri, unit, color }) {
     </div>
   );
 }
-
+ 
 function NutritionTab({ week, nutritionDB }) {
   const targets = week.targets && week.targets.padre;
   if (!targets) return null;
   const goal = targets.goal; // [cal, protein, carbs, fat, fiber]
-
+ 
   // Aggregate micros from all meals in the week using nutritionDB
   const dri = nutritionDB._dri && nutritionDB._dri.padre;
   const microKeys = dri ? Object.keys(dri) : [];
-
+ 
   // Estimate weekly average micros by summing ingredient micros
   const weekMicros = {};
   microKeys.forEach(k => weekMicros[k] = 0);
@@ -536,9 +634,9 @@ function NutritionTab({ week, nutritionDB }) {
   // Average over 7 days
   const dailyMicros = {};
   microKeys.forEach(k => dailyMicros[k] = Math.round(weekMicros[k] / 7));
-
+ 
   const macroRows = [["cal","kcal"],["protein","g"],["carbs","g"],["fat","g"],["fiber","g"]];
-
+ 
   return (
     <div>
       {/* Macro targets */}
@@ -556,7 +654,7 @@ function NutritionTab({ week, nutritionDB }) {
           <strong style={{ color:T.textMid }}>T2D approach:</strong> Carbs are intentionally low (~115g/day) from low-GI sources only — lentils (GI ~32), chickpeas, vegetables, small amounts of quinoa and whole grain bread. No refined grains, no added sugar. The bedtime snack anchors overnight blood sugar every night.
         </div>
       </Card>
-
+ 
       {/* Macro breakdown table */}
       <Card style={{ marginBottom:16 }}>
         <SectionLabel>Daily Breakdown by Meal</SectionLabel>
@@ -583,7 +681,7 @@ function NutritionTab({ week, nutritionDB }) {
           </table>
         </div>
       </Card>
-
+ 
       {/* Micronutrients */}
       <Card>
         <SectionLabel>Micronutrients — Est. Daily Average</SectionLabel>
@@ -621,7 +719,7 @@ function NutritionTab({ week, nutritionDB }) {
     </div>
   );
 }
-
+ 
 // ── Week View ────────────────────────────────────────────────────────
 function WeekView({ week, nutritionDB }) {
   const [tab, setTab] = useState(0);
@@ -648,7 +746,7 @@ function WeekView({ week, nutritionDB }) {
     </div>
   );
 }
-
+ 
 // ── History Tab ──────────────────────────────────────────────────────
 function HistoryTab({ allWeeks, nutritionDB }) {
   const [viewing, setViewing] = useState(null);
@@ -682,7 +780,7 @@ function HistoryTab({ allWeeks, nutritionDB }) {
     </div>
   );
 }
-
+ 
 // ── App ──────────────────────────────────────────────────────────────
 function App() {
   const [mainTab, setMainTab]   = useState(0);
@@ -693,7 +791,7 @@ function App() {
   const [subs, setSubs] = useState(() => { try { return JSON.parse(localStorage.getItem("padre_subs")||"{}"); } catch { return {}; } });
   const setSub = useCallback((key,val) => setSubs(prev => { const next={...prev}; if(val==null) delete next[key]; else next[key]=val; localStorage.setItem("padre_subs",JSON.stringify(next)); return next; }), []);
   const [openKey, setOpenKey] = useState(null);
-
+ 
   useEffect(() => {
     fetch("nutrition.json").then(r=>r.json()).then(setNutritionDB).catch(()=>{});
     async function load() {
@@ -709,19 +807,19 @@ function App() {
     }
     load();
   }, []);
-
+ 
   const currentWeek = allWeeks.find(w => w.id === CURRENT_WEEK_ID);
   const MAIN_TABS = ["This Week","Shopping","Nutrition","Past Weeks"];
-
+ 
   if (loading) return <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", color:T.textLight, fontSize:13 }}>Loading Padre's Pantry…</div>;
   if (error)   return <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center" }}><div style={{ textAlign:"center" }}><div style={{ color:T.accent, fontFamily:"'Playfair Display', serif", fontSize:18, marginBottom:8 }}>Something's off</div><div style={{ color:T.textLight, fontSize:11 }}>{error}</div></div></div>;
-
+ 
   return (
     <OpenDropdownCtx.Provider value={{ openKey, setOpenKey }}>
     <SubsCtx.Provider value={{ subs, setSub }}>
       <div style={{ minHeight:"100vh", padding:"40px 20px 80px" }}>
         <div style={{ maxWidth:860, margin:"0 auto" }}>
-
+ 
           {/* Header */}
           <div style={{ marginBottom:24, borderBottom:`1px solid ${T.divider}`, paddingBottom:24 }}>
             <div style={{ fontSize:10, letterSpacing:"0.2em", textTransform:"uppercase", color:T.textLight, marginBottom:8, fontFamily:"'Playfair Display', serif" }}>Mediterranean · Meal Plan</div>
@@ -729,17 +827,17 @@ function App() {
               Padre's <span style={{ color:T.accent, fontStyle:"italic" }}>Pantry.</span>
             </h1>
           </div>
-
+ 
           {/* Water Tracker */}
           <WaterTracker />
-
+ 
           {/* Main nav */}
           <div style={{ display:"flex", gap:3, background:"#f0ebe0", border:`1px solid ${T.cardBorder}`, borderRadius:14, padding:4, marginBottom:28, maxWidth:480 }}>
             {MAIN_TABS.map((t,i) => (
               <button key={t} onClick={() => setMainTab(i)} style={{ flex:1, padding:"9px 12px", background:mainTab===i?T.card:"none", border:`1px solid ${mainTab===i?T.cardBorder:"transparent"}`, borderRadius:10, cursor:"pointer", color:mainTab===i?T.text:T.textLight, fontSize:12, fontWeight:mainTab===i?500:400, transition:"all 0.15s" }}>{t}</button>
             ))}
           </div>
-
+ 
           {mainTab===0 && currentWeek && (
             <div>
               <div style={{ fontSize:13, color:T.accent, fontFamily:"'Playfair Display', serif", marginBottom:20 }}>{currentWeek.label}</div>
@@ -749,22 +847,23 @@ function App() {
           {mainTab===1 && currentWeek && <ShoppingTab week={currentWeek} />}
           {mainTab===2 && currentWeek && <NutritionTab week={currentWeek} nutritionDB={nutritionDB} />}
           {mainTab===3 && <HistoryTab allWeeks={allWeeks} nutritionDB={nutritionDB} />}
-
+ 
           {/* Footer */}
           <div style={{ marginTop:64, paddingTop:28, borderTop:`1px solid ${T.divider}`, textAlign:"center" }}>
             <div style={{ fontFamily:"'Playfair Display', serif", fontSize:"clamp(1.1rem,3vw,1.4rem)", fontWeight:400, fontStyle:"italic", color:T.textLight, letterSpacing:"0.02em" }}>
               Love you, Padre. <span style={{ color:T.accent }}>♥</span>
             </div>
           </div>
-
+ 
         </div>
       </div>
     </SubsCtx.Provider>
     </OpenDropdownCtx.Provider>
   );
 }
-
+ 
 ReactDOM.render(<App />, document.getElementById("root"));
 </script>
 </body>
 </html>
+ 
